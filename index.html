@@ -388,7 +388,8 @@
 
   function closeDetail() {
     document.getElementById('detail-view').style.display = 'none';
-    document.getElementById('main-view').style.display = 'block';
+    /* 💥 심복의 팩트 폭격 수정 지점: 'block'을 'flex'로 변경했쇼! */
+    document.getElementById('main-view').style.display = 'flex';
   }
 
   window.onload = fetchSchedules;
