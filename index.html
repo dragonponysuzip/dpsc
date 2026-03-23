@@ -15,7 +15,6 @@
 <meta name="apple-mobile-web-app-title" content="DRAGON PONY SCHEDULE">
 
 <style>
-  /* [수정 1] body에서 전체 스크롤을 막고 검은 배경 깔기 */
   body { 
     font-family: 'Pretendard', sans-serif; 
     margin: 0; 
@@ -24,7 +23,6 @@
     overflow: hidden; 
   }
 
-  /* [수정 2] app-wrap은 중앙 정렬 및 내부 콘텐츠만 스크롤 되도록 틀 고정 */
   .app-wrap { 
     max-width: 480px; 
     margin: 0 auto; 
@@ -45,12 +43,10 @@
   .tab-btn { flex: 1; padding: 15px 0; border: none; background: none; font-size: 1rem; font-weight: bold; color: #555; cursor: pointer; transition: 0.2s; }
   .tab-btn.active { color: #fff; border-bottom: 3px solid #cc0033; }
   
-  /* [수정 3] height: 0; 을 줘서 Flexbox 안에서 스크롤이 완벽하게 작동하도록 수정 */
   .view-content { flex-grow: 1; height: 0; overflow-y: auto; overflow-x: hidden; display: none; background: #121212; padding-bottom: 120px; }
   .view-content.active { display: block; }
   .list-page { padding: 10px 20px; }
   
-  /* [추가] PC 환경 스크롤바 디자인 (이걸 넣어야 윈도우 PC에서도 예쁜 스크롤바가 생깁니다) */
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-thumb { background-color: #444; border-radius: 10px; }
   ::-webkit-scrollbar-track { background-color: #121212; }
@@ -92,8 +88,7 @@
   .insta-footer-link { font-size: 0.85rem; font-weight: 300; color: #777; text-decoration: none; }
   
   .detail-page { display: none; background: #121212; position: absolute; top: 0; left: 0; width: 100%; height: 100%; box-sizing: border-box; overflow-y: auto; overflow-x: hidden; z-index: 10; color: #fff; }
-  .floating-back-btn { position: fixed; top: 20px; left: 50%; margin-left: -225px; /* 480px의 절반 위치에서 여백 */ width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.6); color: #fff; border: 1px solid rgba(255,255,255,0.2); font-size: 1rem; z-index: 100; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-  /* 모바일 화면일 때 뒤로가기 버튼 위치 조정 */
+  .floating-back-btn { position: fixed; top: 20px; left: 50%; margin-left: -225px; width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.6); color: #fff; border: 1px solid rgba(255,255,255,0.2); font-size: 1rem; z-index: 100; display: flex; align-items: center; justify-content: center; cursor: pointer; }
   @media (max-width: 480px) {
     .floating-back-btn { left: 15px; margin-left: 0; }
   }
@@ -294,6 +289,7 @@
     renderList();
   }
 
+  /* 💥 지나간 스케줄도 연속 일정(끝나는 날짜 기준)에 맞게 버그 수정! */
   function sortSchedules() {
     const scheduleList = document.getElementById('schedule-list');
     const notice = scheduleList.querySelector('.filter-notice');
@@ -308,8 +304,23 @@
 
     items.forEach(item => {
       const dateStr = item.querySelector('.date').innerText;
-      const [m, d] = dateStr.split('/').map(n => parseInt(n));
-      const itemDate = new Date(currentYear, m - 1, d);
+      const parts = dateStr.split('-');
+      let endM, endD;
+      
+      if (parts.length === 1) {
+        [endM, endD] = parts[0].split('/').map(Number);
+      } else {
+        const endParts = parts[1].split('/').map(Number);
+        if (endParts.length === 1) {
+          endM = Number(parts[0].split('/')[0]);
+          endD = endParts[0];
+        } else {
+          endM = endParts[0];
+          endD = endParts[1];
+        }
+      }
+      
+      const itemDate = new Date(currentYear, endM - 1, endD);
       if(itemDate < today) pastWrapper.appendChild(item);
       else upcomingWrapper.appendChild(item);
     });
@@ -320,6 +331,35 @@
     if(pastWrapper.children.length > 0) scheduleList.appendChild(pastDetails);
   }
 
+  /* 💥 연속 스케줄 달력 렌더링용 핵심 함수 추가! */
+  function isDateInRange(targetMonth, targetDay, dateStr) {
+    const parts = dateStr.split('-');
+    if (parts.length === 1) {
+      const [m, d] = parts[0].split('/').map(Number);
+      return m === targetMonth && d === targetDay;
+    } else {
+      const startParts = parts[0].split('/').map(Number);
+      const startM = startParts[0];
+      const startD = startParts[1];
+      let endM, endD;
+      const endParts = parts[1].split('/').map(Number);
+      
+      if (endParts.length === 1) {
+        endM = startM;
+        endD = endParts[0];
+      } else {
+        endM = endParts[0];
+        endD = endParts[1];
+      }
+      
+      const startDate = new Date(currentYear, startM - 1, startD).getTime();
+      const endDate = new Date(currentYear, endM - 1, endD).getTime();
+      const cellDate = new Date(currentYear, targetMonth - 1, targetDay).getTime();
+      
+      return cellDate >= startDate && cellDate <= endDate;
+    }
+  }
+
   function renderCalendar(year, month) {
     const calGrid = document.getElementById('cal-grid');
     document.getElementById('cal-title').innerText = `${year}년 ${month}월`;
@@ -328,13 +368,21 @@
     const firstDay = new Date(year, month - 1, 1).getDay();
     const lastDate = new Date(year, month, 0).getDate();
     const today = new Date(); today.setHours(0,0,0,0);
+    
     for(let i=0; i<firstDay; i++) calGrid.innerHTML += `<div class="cal-day empty"></div>`;
+    
     for(let d=1; d<=lastDate; d++) {
-      const targetDateStr = `${String(month).padStart(2,'0')}/${String(d).padStart(2,'0')}`;
       const cellDate = new Date(year, month - 1, d);
       const isToday = cellDate.getTime() === today.getTime();
       const bgColor = cellDate < today ? '#333' : '#cc0033'; 
-      const dayEvents = scheduleData.filter(ev => ev.dateStr === targetDateStr && (!currentFilter || ev.typeStr === currentFilter));
+      
+      /* 💥 연속 스케줄 필터링 적용된 부분 */
+      const dayEvents = scheduleData.filter(ev => {
+        const dateMatch = isDateInRange(month, d, ev.dateStr);
+        const filterMatch = !currentFilter || ev.typeStr === currentFilter;
+        return dateMatch && filterMatch;
+      });
+      
       let eventHtml = '';
       dayEvents.forEach(ev => {
         const div = document.createElement('div');
@@ -344,10 +392,12 @@
         div.onclick = (e) => { e.stopPropagation(); openDetail(ev.dateStr, ev.titleStr, ev.imgUrl, ev.descStr); };
         eventHtml += div.outerHTML;
       });
+      
       const dayEl = document.createElement('div');
       dayEl.className = `cal-day ${isToday ? 'today' : ''}`;
       let todayBadge = isToday ? `<span class="today-label">TODAY</span>` : '';
       dayEl.innerHTML = `<span>${d}</span>${todayBadge}${eventHtml}`;
+      
       dayEl.querySelectorAll('.cal-event').forEach((el, idx) => {
         el.onclick = (e) => { e.stopPropagation(); openDetail(dayEvents[idx].dateStr, dayEvents[idx].titleStr, dayEvents[idx].imgUrl, dayEvents[idx].descStr); };
       });
@@ -363,18 +413,24 @@
     document.getElementById('detail-view').style.display = 'block';
     document.getElementById('view-date').innerText = date;
     document.getElementById('view-title').innerText = title;
+    
     if(imageUrl && imageUrl.trim() !== '') {
       document.getElementById('view-image').innerHTML = `<img src="${imageUrl}" alt="포스터">`;
     } else {
       document.getElementById('view-image').innerHTML = '<div style="height: 350px; background: radial-gradient(circle, #2a2a2a 0%, #111 100%); width: 100%;"></div>';
     }
+    
     let formattedText = String(text).replace(/\n/g, '<br>');
     if (!formattedText.includes('<a href')) {
       const urlRegex = /(https?:\/\/[^\s<>]+)/g;
       formattedText = formattedText.replace(urlRegex, url => `<a href="${url}" target="_blank">인스타그램 바로가기 ↗</a>`);
     }
     document.getElementById('view-text').innerHTML = formattedText;
-    const [m, d] = date.split('/').map(n => n.padStart(2, '0'));
+    
+    /* 💥 캘린더 추가 버튼 에러 안 나게 방지 (연속 일정이면 시작 날짜만 뽑기!) */
+    const startDatePart = date.split('-')[0];
+    const [m, d] = startDatePart.split('/').map(n => n.padStart(2, '0'));
+    
     const startDateTime = `${currentYear}${m}${d}T090000Z`;
     const endDateTime = `${currentYear}${m}${d}T100000Z`;
     const summary = `[DP] ${title}`;
@@ -388,7 +444,6 @@
 
   function closeDetail() {
     document.getElementById('detail-view').style.display = 'none';
-    /* 💥 심복의 팩트 폭격 수정 지점: 'block'을 'flex'로 변경했쇼! */
     document.getElementById('main-view').style.display = 'flex';
   }
 
