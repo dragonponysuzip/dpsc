@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DragonPony Schedule v4.2</title>
+<title>DragonPony Schedule v4.3</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
@@ -24,34 +24,34 @@
   .tab-btn { flex: 1; padding: 15px 0; border: none; background: none; font-size: 0.95rem; font-weight: bold; color: #555; cursor: pointer; transition: 0.2s; }
   .tab-btn.active { color: #fff; border-bottom: 3px solid #cc0033; }
 
-  /* 💥 [근본 복구] 달력 헤더 */
+  /* 💥 [박멸] 달력 헤더 */
   .cal-header-wrap { display: flex; justify-content: space-between; align-items: center; padding: 25px 30px; flex-shrink: 0; }
   .cal-nav-btn { background: none; border: none; color: rgba(255, 255, 255, 0.4); font-size: 1.2rem; cursor: pointer; padding: 10px; }
   #cal-title { font-size: 1.6rem; font-weight: bold; }
   
-  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; padding: 0 15px 15px; flex-shrink: 0; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; padding: 0 15px 15px; flex-shrink: 0; }
   .cal-day-name { font-size: 0.75rem; color: #666; text-align: center; margin-bottom: 10px; }
   
-  /* 💥 [복구] 세로가 긴 황금 비율 박스 (image_1.jpg 참고) */
+  /* 💥 [복구] 길쭉한 세로 비율 박스 강제 고정쇼 (image_1.jpg 완벽 빙의) */
   .cal-day { 
-    min-height: 95px; /* 세로 길이를 ㅈㄴ게 확보했쇼 ㅋㅋㅋ */
-    border: 1px solid #222; border-radius: 8px; padding: 6px 4px; 
-    font-size: 0.9rem; position: relative; display: flex; flex-direction: column; align-items: center; 
+    aspect-ratio: 1 / 1.6; /* 💥 비율을 1:1.6으로 강제 고정해서 절대 안 찌그러지게 했쇼!! */
+    border: 1px solid #222; border-radius: 8px; padding: 8px 4px; 
+    font-size: 0.9rem; position: relative; display: flex; flex-direction: column; align-items: center; overflow: hidden;
   }
   .cal-day.today { border: 2.5px solid #cc0033; background: rgba(204, 0, 51, 0.1); }
   
-  /* 💥 [복구] 날짜 아래에 TODAY 수직 배치 (안 겹치게!!) */
-  .day-num { font-size: 1.0rem; color: #fff; font-weight: bold; display: block; line-height: 1; margin-top: 2px; }
+  /* 💥 [복구] 날짜 숫자 & TODAY 수직 정렬 */
+  .day-num { font-size: 1.0rem; color: #fff; font-weight: bold; display: block; line-height: 1.1; margin-top: 2px; }
   .today-tag { font-size: 0.55rem; color: #cc0033; font-weight: bold; display: block; margin-top: 4px; line-height: 1; }
   
-  /* 💥 [복구] 스케줄 하단 배치 로직 */
-  .cal-event-list { flex-grow: 1; display: flex; flex-direction: column; justify-content: flex-end; width: 100%; gap: 3px; margin-top: 10px; overflow: hidden; }
+  /* 💥 [복구] 스케줄 아래로 다 밀어버리기!! */
+  .cal-event-list { flex-grow: 1; display: flex; flex-direction: column; justify-content: flex-end; width: 100%; gap: 3px; margin-top: 5px; overflow: hidden; }
   .cal-event { 
     color: #fff; font-size: 0.6rem; padding: 2px 4px; border-radius: 4px; 
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; box-sizing: border-box; text-align: center;
   }
 
-  /* [목록 보기 디자인 수호] */
+  /* [목록 디자인 수호] */
   .list-page { padding: 10px 25px; }
   .schedule-item { display: flex; align-items: center; padding: 22px 0; border-bottom: 1px solid #222; cursor: pointer; }
   .date { font-weight: bold; color: #cc0033; width: 60px; font-size: 1.05rem; flex-shrink: 0; }
@@ -62,7 +62,7 @@
   .check-btn.checked { background: #cc0033; border-color: #cc0033; color: #fff; }
   .check-btn.checked::after { content: '✓'; }
 
-  /* [기타 스타일링] */
+  /* [기타 설정] */
   .data-mgmt { margin: 40px 0 100px; padding: 25px 20px; border: 1px solid #222; border-radius: 12px; background: #0a0a0a; text-align: center; }
   .data-btn-row { display: flex; gap: 10px; }
   .data-btn { flex: 1; padding: 12px; background: #1a1a1a; border: 1px solid #333; color: #777; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
@@ -186,7 +186,7 @@
       const dayEl = document.createElement('div'); dayEl.className = 'cal-day' + (cell.getTime()===today.getTime()?' today':'');
       let evH = ''; evs.forEach(ev => evH += `<div class="cal-event" style="background:${cell < today ? '#333' : '#cc0033'}" onclick="event.stopPropagation(); openDetail('${ev.dateStr}','${ev.titleStr}','${ev.imgUrl}','${ev.descStr}')">${ev.titleStr}</div>`);
       
-      // 💥 [복구] 날짜 아래 수직으로 TODAY 배치!! 겹침 ㅈㄴ게 박멸했쇼!!
+      // 💥 [복구] 날짜 숫자 + TODAY 뱃지 수직 정렬쇼!! 겹침 박멸!!
       const todayHtml = (cell.getTime()===today.getTime()?'<span class="today-tag">TODAY</span>':'');
       dayEl.innerHTML = `<span class="day-num">${d}</span>${todayHtml}<div class="cal-event-list">${evH}</div>`;
       g.appendChild(dayEl);
