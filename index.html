@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DragonPony Schedule v4.4</title>
+<title>DragonPony Schedule v4.5</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
@@ -16,32 +16,31 @@
   .view-content { flex-grow: 1; height: 0; overflow-y: auto; display: none; background: #121212; padding-bottom: 120px; }
   .view-content.active { display: block; }
 
-  /* [헤더 & 탭] */
-  .header { background: #0a0a0a; color: #fff; padding: 30px 20px 20px; text-align: center; border-bottom: 1px solid #222; flex-shrink: 0; }
-  .main-title { display: block; font-family: 'Bebas Neue', sans-serif; font-size: 2.4rem; letter-spacing: 4px; color: #fff; line-height: 1; }
-  .sub-title-link { display: block; font-size: 0.85rem; color: #666; text-decoration: none; margin-top: 8px; }
+  /* 💥 [최종 수정] 대제목 사이즈 50% 축소 (모바일 한 줄 수호!!) */
+  .header { background: #0a0a0a; color: #fff; padding: 25px 20px 15px; text-align: center; border-bottom: 1px solid #222; flex-shrink: 0; }
+  .main-title { 
+    display: block; font-family: 'Bebas Neue', sans-serif; 
+    font-size: 1.4rem; /* 💥 기존 2.4rem에서 ㅈㄴ게 서늘하게 절반 수준으로 축소!! */
+    letter-spacing: 2px; /* 자간도 살짝 조여서 한 줄 수호쇼!! */
+    color: #fff; line-height: 1; 
+  }
+  .sub-title-link { display: block; font-size: 0.75rem; color: #666; text-decoration: none; margin-top: 6px; letter-spacing: 0.5px; }
+  
+  /* [탭 버튼] */
   .tab-wrap { display: flex; border-bottom: 1px solid #222; flex-shrink: 0; background: #121212; }
   .tab-btn { flex: 1; padding: 15px 0; border: none; background: none; font-size: 0.95rem; font-weight: bold; color: #555; cursor: pointer; transition: 0.2s; }
   .tab-btn.active { color: #fff; border-bottom: 3px solid #cc0033; }
 
-  /* 💥 [복구] 필터 안내 박스 디자인 (image_0b4673.png 완벽 복사) */
-  .filter-notice { 
-    text-align: center; padding: 22px 10px; background: #1a1a1a; border-radius: 12px; 
-    margin: 15px 0 25px; font-size: 1.0rem; color: #bbb; border: 1.5px dashed #444; 
-    letter-spacing: -0.2px; line-height: 1.6;
-  }
-  /* 💥 텍스트 컬러 & 이모지 디테일 */
+  /* [안내 박스] */
+  .filter-notice { text-align: center; padding: 18px 10px; background: #1a1a1a; border-radius: 12px; margin: 15px 0 25px; font-size: 0.95rem; color: #bbb; border: 1.5px dashed #444; }
   .filter-notice span.highlight { color: #cc0033; font-weight: bold; }
-  .filter-notice .reset-btn { 
-    cursor: pointer; text-decoration: underline; display: inline-block; 
-    margin-top: 10px; color: #888; font-size: 0.9rem; letter-spacing: 0.5px;
-  }
+  .filter-notice .reset-btn { cursor: pointer; text-decoration: underline; display: inline-block; margin-top: 8px; color: #888; font-size: 0.85rem; }
 
-  /* [달력 디자인] */
-  .cal-header-wrap { display: flex; justify-content: space-between; align-items: center; padding: 25px 30px; flex-shrink: 0; }
+  /* [달력] */
+  .cal-header-wrap { display: flex; justify-content: space-between; align-items: center; padding: 20px 30px; flex-shrink: 0; }
   .cal-nav-btn { background: none; border: none; color: rgba(255, 255, 255, 0.4); font-size: 1.2rem; cursor: pointer; padding: 10px; }
-  #cal-title { font-size: 1.6rem; font-weight: bold; }
-  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; padding: 0 15px 15px; flex-shrink: 0; }
+  #cal-title { font-size: 1.4rem; font-weight: bold; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; padding: 0 15px 15px; flex-shrink: 0; }
   .cal-day-name { font-size: 0.75rem; color: #666; text-align: center; margin-bottom: 10px; }
   .cal-day { aspect-ratio: 1 / 1.6; border: 1px solid #222; border-radius: 8px; padding: 8px 4px; font-size: 0.9rem; position: relative; display: flex; flex-direction: column; align-items: center; overflow: hidden; }
   .cal-day.today { border: 2.5px solid #cc0033; background: rgba(204, 0, 51, 0.1); }
@@ -50,25 +49,18 @@
   .cal-event-list { flex-grow: 1; display: flex; flex-direction: column; justify-content: flex-end; width: 100%; gap: 3px; margin-top: 5px; overflow: hidden; }
   .cal-event { color: #fff; font-size: 0.6rem; padding: 2px 4px; border-radius: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; box-sizing: border-box; text-align: center; }
 
-  /* [목록 디자인] */
+  /* [목록] */
   .list-page { padding: 10px 25px; }
   .schedule-item { display: flex; align-items: center; padding: 22px 0; border-bottom: 1px solid #222; cursor: pointer; }
   .date { font-weight: bold; color: #cc0033; width: 60px; font-size: 1.05rem; flex-shrink: 0; }
-  
-  /* 💥 [복구] 분류딱지 디자인 (기본은 테두리만!!) */
-  .category-badge { 
-    padding: 3px 6px; margin-right: 15px; font-size: 0.7rem; font-weight: 700; 
-    color: #cc0033; border: 1px solid #cc0033; border-radius: 4px; white-space: nowrap; flex-shrink: 0; 
-  }
-  /* 💥 [복구] 필터링 중일 때만 꽉 찬 빨간 박스!! */
+  .category-badge { padding: 3px 6px; margin-right: 15px; font-size: 0.7rem; font-weight: 700; color: #cc0033; border: 1px solid #cc0033; border-radius: 4px; white-space: nowrap; flex-shrink: 0; }
   .category-badge.active { background: #cc0033; color: #fff; border-color: #cc0033; }
-
   .title { font-size: 1.05rem; flex-grow: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #eee; padding-right: 15px; }
   .check-btn { width: 24px; height: 22px; border: 2px solid #444; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; color: transparent; cursor: pointer; margin-left: auto; }
   .check-btn.checked { background: #cc0033; border-color: #cc0033; color: #fff; }
   .check-btn.checked::after { content: '✓'; }
 
-  /* [기타 및 상세 페이지] */
+  /* [데이터 관리 & 기타] */
   .data-mgmt { margin: 40px 0 100px; padding: 25px 20px; border: 1px solid #222; border-radius: 12px; background: #0a0a0a; text-align: center; }
   .data-btn-row { display: flex; gap: 10px; }
   .data-btn { flex: 1; padding: 12px; background: #1a1a1a; border: 1px solid #333; color: #777; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
@@ -93,7 +85,6 @@
     <div id="lyrics-view" class="view-content"><div class="lyrics-grid" id="lyrics-grid"></div></div>
     <div class="footer"><a href="#" style="color:#444; font-size:0.85rem; text-decoration:none;">@dragonponysuzip</a></div>
   </div>
-
   <div class="detail-page" id="detail-view">
     <button class="floating-back-btn" onclick="closeDetail()">◀</button>
     <div style="padding: 80px 25px 20px;">
@@ -103,10 +94,8 @@
       <div id="add-to-cal-btn-area" style="margin-top:20px; padding-bottom:120px;"></div>
     </div>
   </div>
-
   <div class="lyrics-detail" id="lyrics-detail-view"><button class="floating-back-btn" onclick="closeLyrics()">◀</button><div id="l-title" style="font-size:2.2rem; font-weight:900; color:#cc0033; margin:80px 0 30px; text-align:center;"></div><div id="l-content" style="text-align:center; line-height:2.2; color:#bbb; white-space:pre-line; padding:0 20px 100px;"></div></div>
 </div>
-
 <script>
   let currentYear = new Date().getFullYear(), currentMonth = new Date().getMonth() + 1;
   let scheduleData = [], lyricsData = [], currentFilter = '';
@@ -128,48 +117,28 @@
   function renderList() {
     const list = document.getElementById('schedule-list'); list.innerHTML = '';
     const att = getAttendance(); const today = new Date(); today.setHours(0,0,0,0);
-    
-    // 💥 [복구] 상단 필터 점선 박스 (image_0b4673.png 완벽 복사)
     if(currentFilter) {
       const n = document.createElement('div'); n.className = 'filter-notice';
       n.innerHTML = `<span class="highlight">[${currentFilter}]</span> 스케줄만 모아보는 중 🤘<br><span class="reset-btn" onclick="toggleFilter('')">전체 스케줄 보기</span>`;
       list.appendChild(n);
     }
-
     const filtered = currentFilter ? scheduleData.filter(d => d.typeStr === currentFilter) : scheduleData;
     const upW = document.createElement('div'), pastD = document.createElement('details');
     pastD.className = 'past-schedules'; pastD.innerHTML = '<summary style="cursor:pointer; text-align:center; padding:15px; color:#888; background:#1a1a1a; border-radius:12px; font-weight:bold; list-style:none; margin:10px 0;">▼ 지나간 스케줄 보기</summary>';
     const pastW = document.createElement('div'); pastD.appendChild(pastW);
-
     filtered.forEach(item => {
       const p = item.dateStr.split('-')[0].split('/'); const itemD = new Date(currentYear, p[0]-1, p[1]);
       const div = document.createElement('div'); div.className = 'schedule-item';
       div.onclick = () => openDetail(item.dateStr, item.titleStr, item.imgUrl, item.descStr);
-      
-      // 💥 [복구] 분류딱지: 필터 중일 때만 active 클래스 붙여서 꽉 찬 빨간박스로!!
-      const badgeClass = currentFilter === item.typeStr ? 'category-badge active' : 'category-badge';
-      div.innerHTML = `<div class="date">${item.dateStr}</div><div class="${badgeClass}" onclick="event.stopPropagation(); toggleFilter('${item.typeStr}')">${item.typeStr || '기타'}</div><div class="title">${item.titleStr}</div><div class="check-btn ${att[item.titleStr]?'checked':''}" onclick="event.stopPropagation(); att[item.titleStr]=!att[item.titleStr]; localStorage.setItem('dp_attendance', JSON.stringify(att)); renderList();"></div>`;
-      
-      const isPast = itemD < today;
-      if(isPast) {
-        div.style.opacity = '0.4';
-        div.querySelector('.date').style.color = '#666';
-        div.querySelector('.category-badge').style.borderColor = '#666';
-        div.querySelector('.category-badge').style.color = '#666';
-        pastW.appendChild(div);
-      } else {
-        upW.appendChild(div);
-      }
+      const bc = currentFilter === item.typeStr ? 'category-badge active' : 'category-badge';
+      div.innerHTML = `<div class="date">${item.dateStr}</div><div class="${bc}" onclick="event.stopPropagation(); toggleFilter('${item.typeStr}')">${item.typeStr || '기타'}</div><div class="title">${item.titleStr}</div><div class="check-btn ${att[item.titleStr]?'checked':''}" onclick="event.stopPropagation(); att[item.titleStr]=!att[item.titleStr]; localStorage.setItem('dp_attendance', JSON.stringify(att)); renderList();"></div>`;
+      if(itemD < today) { div.style.opacity = '0.4'; div.querySelector('.date').style.color = '#666'; div.querySelector('.category-badge').style.borderColor = '#666'; div.querySelector('.category-badge').style.color = '#666'; pastW.appendChild(div); } else upW.appendChild(div);
     });
     list.appendChild(upW); if(pastW.children.length > 0) list.appendChild(pastD);
   }
   function isDateInRange(m, d, str) {
     const p = str.split('-'); const s = p[0].split('/'); if(parseInt(s[0])===m && parseInt(s[1])===d) return true;
-    if(p[1]) {
-      const e = p[1].split('/'); const cell = new Date(currentYear, m-1, d).getTime();
-      const start = new Date(currentYear, s[0]-1, s[1]).getTime(), end = e.length===1 ? new Date(currentYear, s[0]-1, e[0]).getTime() : new Date(currentYear, e[0]-1, e[1]).getTime();
-      return cell >= start && cell <= end;
-    }
+    if(p[1]) { const e = p[1].split('/'); const cell = new Date(currentYear, m-1, d).getTime(); const start = new Date(currentYear, s[0]-1, s[1]).getTime(), end = e.length===1 ? new Date(currentYear, s[0]-1, e[0]).getTime() : new Date(currentYear, e[0]-1, e[1]).getTime(); return cell >= start && cell <= end; }
     return false;
   }
   function renderCalendar(y, m) {
