@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DragonPony Schedule v2.3</title>
+<title>DragonPony Schedule v2.4</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,7 +26,7 @@
   .view-content { flex-grow: 1; height: 0; overflow-y: auto; display: none; background: #121212; padding-bottom: 120px; }
   .view-content.active { display: block; }
 
-  /* [LYRICS TAB STYLE] */
+  /* [LYRICS TAB STYLE - 환하게!!] */
   .lyrics-page { padding: 20px; }
   .lyrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .lyrics-item { 
@@ -63,7 +63,7 @@
   .hero-title-area { position: absolute; bottom: 30px; left: 20px; right: 20px; z-index: 2; }
   .d-date { color: #cc0033; font-weight: 900; font-size: 1.4rem; }
   .d-title { font-size: 2.2rem; font-weight: 900; line-height: 1.2; }
-  .ticket-section { padding: 20px; padding-bottom: 120px; }
+  .ticket-section { padding: 20px 20px 120px; }
   .ticket-wrapper { background: #1a1a1a; border: 2px dashed #444; border-radius: 12px; padding: 35px 20px 25px; position: relative; }
   .ticket-label { position: absolute; top: -14px; left: 20px; background: #cc0033; color: #fff; font-size: 0.8rem; font-weight: 900; padding: 6px 15px; border-radius: 4px; }
   .add-cal-btn { display: block; width: 100%; padding: 15px; background: #1a1a1a; border: 1px solid #333; color: #eee; border-radius: 8px; font-weight: bold; text-align: center; text-decoration: none; margin-top: 20px; }
@@ -142,4 +142,141 @@
   let scheduleData = [];
   
   const unreleasedLyrics = [
-    { title: "
+    { title: "NOT OUT", content: "Baby please don't cry tonight\n우린 이제 시작이야\nWe're not crazy it's not enough\n이젠 더 미쳐야만 해\n\n거친 숨을 몰아쉬어\n세상 끝에 서있어도\n절대 멈추지 않을 우리\nNot Out, We are Not Out" },
+    { title: "NEVER", content: "난 널 절대 놓지 않아\nNever let you go\n차가운 빗속을 걸어도\n너와 나 함께라면\n\n부서진 조각들을 모아\n다시 빛을 만들게\n영원히 변치 않을 약속\nNever, I say Never" },
+    { title: "DENEB", content: "가장 먼 곳에서 빛나는 별\n데네브 그 이름을 불러\n멀리 떨어져 있어도\n내 맘은 너를 향해 달려가\n\n밤하늘의 지도 속에\n너라는 좌표를 새겨\n언제든 널 찾을 수 있게\n밝게 빛나줘 내 데네브" },
+    { title: "Morse Code", content: "점과 선으로 이어진 신호\n너에게만 들리는 말\n뚜뚜 뚜뚜 뚜뚜뚜\n비밀스럽게 전해지는 맘\n\n복잡한 세상 속에서\n우리만의 언어로\n누구도 알 수 없게\n사랑을 속삭여 Morse Code" }
+  ];
+
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-btn, .view-content').forEach(el => el.classList.remove('active'));
+    document.getElementById('btn-' + tab).classList.add('active');
+    document.getElementById(tab + '-view').classList.add('active');
+    if(tab === 'calendar') renderCalendar(currentYear, currentMonth);
+    if(tab === 'list') renderList();
+    if(tab === 'lyrics') renderLyrics();
+  }
+
+  async function fetchSchedules() {
+    const sheetId = '1UKMplA90Fz4x3ueJtjRSOGOK1bD1c74GkK-wo573dG4';
+    const url = 'https://docs.google.com/spreadsheets/d/' + sheetId + '/gviz/tq?tqx=out:json';
+    try {
+      const response = await fetch(url);
+      const text = await response.text();
+      const jsonStr = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
+      const data = JSON.parse(jsonStr);
+      scheduleData = [];
+      data.table.rows.forEach(row => {
+        if (!row.c || !row.c[0]) return;
+        const dateStr = row.c[0].v;
+        const titleStr = row.c[1] ? row.c[1].v : '';
+        const imgUrl = row.c[2] ? row.c[2].v : '';
+        const descStr = row.c[3] ? row.c[3].v : '';
+        const typeStr = (row.c.length > 4 && row.c[4]) ? row.c[4].v : '';
+        if(dateStr === '날짜') return;
+        scheduleData.push({ dateStr, titleStr, imgUrl, descStr, typeStr });
+      });
+      renderCalendar(currentYear, currentMonth);
+      renderList();
+    } catch (e) { console.error("Load Fail", e); }
+  }
+
+  function renderList() {
+    const list = document.getElementById('schedule-list');
+    list.innerHTML = '';
+    scheduleData.forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'schedule-item';
+      div.onclick = function() { openDetail(item.dateStr, item.titleStr, item.imgUrl, item.descStr); };
+      div.innerHTML = '<div class="date">' + item.dateStr + '</div><div class="category-badge">' + (item.typeStr || 'ETC') + '</div><div class="title">' + item.titleStr + '</div>';
+      list.appendChild(div);
+    });
+  }
+
+  function isDateInRange(m, d, str) {
+    const p = str.split('-');
+    if(p.length === 1) { 
+      const parts = p[0].split('/');
+      return parseInt(parts[0]) === m && parseInt(parts[1]) === d; 
+    }
+    const sParts = p[0].split('/');
+    const startM = parseInt(sParts[0]), startD = parseInt(sParts[1]);
+    let eParts = p[1].split('/');
+    let endM, endD;
+    if(eParts.length === 1) { endM = startM; endD = parseInt(eParts[0]); }
+    else { endM = parseInt(eParts[0]); endD = parseInt(eParts[1]); }
+    const start = new Date(currentYear, startM-1, startD).getTime();
+    const end = new Date(currentYear, endM-1, endD).getTime();
+    const target = new Date(currentYear, m-1, d).getTime();
+    return target >= start && target <= end;
+  }
+
+  function renderCalendar(y, m) {
+    const grid = document.getElementById('cal-grid');
+    document.getElementById('cal-title').innerText = y + '년 ' + m + '월';
+    grid.innerHTML = '';
+    ['일','월','화','수','목','금','토'].forEach(d => {
+      grid.innerHTML += '<div style="font-size:0.8rem; color:#666; margin-bottom:5px;">' + d + '</div>';
+    });
+    const first = new Date(y, m-1, 1).getDay();
+    const last = new Date(y, m, 0).getDate();
+    const today = new Date(); today.setHours(0,0,0,0);
+    for(let i=0; i<first; i++) grid.innerHTML += '<div></div>';
+    for(let d=1; d<=last; d++) {
+      const cell = new Date(y, m-1, d);
+      const isToday = cell.getTime() === today.getTime();
+      const events = scheduleData.filter(function(ev) { return isDateInRange(m, d, ev.dateStr); });
+      const dayEl = document.createElement('div');
+      dayEl.className = 'cal-day' + (isToday ? ' today' : '');
+      let evHtml = '';
+      events.forEach(function(ev) {
+        evHtml += '<div class="cal-event" style="background:' + (cell < today ? '#333' : '#cc0033') + '" onclick="event.stopPropagation(); openDetail(\'' + ev.dateStr + '\',\'' + ev.titleStr + '\',\'' + ev.imgUrl + '\',\'' + ev.descStr + '\')">' + ev.titleStr + '</div>';
+      });
+      dayEl.innerHTML = '<span>' + d + '</span>' + evHtml;
+      grid.appendChild(dayEl);
+    }
+  }
+
+  function renderLyrics() {
+    const grid = document.getElementById('lyrics-grid');
+    grid.innerHTML = '';
+    unreleasedLyrics.forEach(function(s) {
+      const div = document.createElement('div');
+      div.className = 'lyrics-item';
+      div.innerText = s.title;
+      div.onclick = function() { 
+        document.getElementById('l-title').innerText = s.title; 
+        document.getElementById('l-content').innerText = s.content; 
+        document.getElementById('lyrics-detail-view').style.display = 'block'; 
+        document.getElementById('main-view').style.display='none'; 
+      };
+      grid.appendChild(div);
+    });
+  }
+
+  function prevMonth() { currentMonth--; if(currentMonth < 1) { currentMonth = 12; currentYear--; } renderCalendar(currentYear, currentMonth); }
+  function nextMonth() { currentMonth++; if(currentMonth > 12) { currentMonth = 1; currentYear++; } renderCalendar(currentYear, currentMonth); }
+
+  function openDetail(date, title, img, txt) {
+    document.getElementById('main-view').style.display = 'none';
+    document.getElementById('detail-view').style.display = 'block';
+    document.getElementById('view-date').innerText = date;
+    document.getElementById('view-title').innerText = title;
+    document.getElementById('view-image').innerHTML = img ? '<img src="' + img + '">' : '<div style="height:350px; background:#222;"></div>';
+    document.getElementById('view-text').innerText = txt;
+    const startPart = date.split('-')[0];
+    const m = startPart.split('/')[0].padStart(2, '0');
+    const d = startPart.split('/')[1].padStart(2, '0');
+    const ics = 'BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nDTSTART:' + currentYear + m + d + 'T090000Z\nSUMMARY:[DP] ' + title + '\nEND:VEVENT\nEND:VCALENDAR';
+    const url = URL.createObjectURL(new Blob([ics], {type:'text/calendar'}));
+    document.getElementById('add-to-cal-btn-area').innerHTML = '<a href="' + url + '" download="dp.ics" class="add-cal-btn">🗓️ 캘린더 추가</a>';
+  }
+
+  function closeDetail() { document.getElementById('detail-view').style.display = 'none'; document.getElementById('main-view').style.display = 'flex'; }
+  function closeLyrics() { document.getElementById('lyrics-detail-view').style.display = 'none'; document.getElementById('main-view').style.display = 'flex'; }
+
+  window.onload = function() { fetchSchedules(); renderLyrics(); };
+</script>
+
+</body>
+</html>
