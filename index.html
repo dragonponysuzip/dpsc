@@ -10,104 +10,96 @@
 <style>
   body { font-family: 'Pretendard', sans-serif; margin: 0; background-color: #000; height: 100vh; overflow: hidden; }
   .app-wrap { max-width: 480px; margin: 0 auto; background: #121212; color: #fff; height: 100%; position: relative; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 0 15px rgba(0,0,0,0.5); }
-  .view-content::-webkit-scrollbar { width: 0px; background: transparent; } 
-  .view-content { -ms-overflow-style: none; scrollbar-width: none; flex-grow: 1; height: 0; overflow-y: auto; display: none; background: #121212; padding-bottom: 120px; }
+  
+  /* 💥 [수정] 모든 뷰에서 스크롤바 ㅈㄴ게 안 보이게 처리!! (3번 이미지 대응) */
+  .view-content::-webkit-scrollbar, .lyrics-detail::-webkit-scrollbar, .detail-page::-webkit-scrollbar { width: 0px; background: transparent; } 
+  .view-content, .lyrics-detail, .detail-page { -ms-overflow-style: none; scrollbar-width: none; } 
+
+  .view-content { flex-grow: 1; height: 0; overflow-y: auto; display: none; background: #121212; padding-bottom: 120px; }
   .view-content.active { display: block; }
 
   /* [헤더 & 탭] */
   .header { background: #0a0a0a; color: #fff; padding: 30px 20px 20px; text-align: center; border-bottom: 1px solid #222; flex-shrink: 0; }
   .main-title { display: block; font-family: 'Bebas Neue', sans-serif; font-size: 2.4rem; letter-spacing: 4px; color: #fff; line-height: 1; }
-  .sub-title-link { display: block; font-size: 0.85rem; color: #666; text-decoration: none; margin-top: 8px; }
+  .sub-title-link { display: block; font-size: 0.85rem; color: #666; text-decoration: none; margin-top: 8px; letter-spacing: 1px; }
   .tab-wrap { display: flex; border-bottom: 1px solid #222; flex-shrink: 0; background: #121212; }
   .tab-btn { flex: 1; padding: 15px 0; border: none; background: none; font-size: 0.95rem; font-weight: bold; color: #555; cursor: pointer; transition: 0.2s; }
   .tab-btn.active { color: #fff; border-bottom: 3px solid #cc0033; }
 
-  /* 💥 [복구 3] 필터 안내 박스 디자인 (3, 4번 이미지 참고) */
-  .filter-notice { 
-    text-align: center; padding: 18px 10px; background: #1a1a1a; border-radius: 12px; 
-    margin: 10px 0 20px; font-size: 0.95rem; color: #bbb; border: 1.5px dashed #444; 
-  }
-  .filter-notice b { color: #cc0033; font-weight: bold; }
-  .filter-notice .reset-btn { cursor: pointer; text-decoration: underline; display: inline-block; margin-top: 8px; color: #888; font-size: 0.85rem; }
+  /* 💥 [수정] 월간 스케줄 크기 폭주 박멸 (v3.0 로직 재강화) */
+  .cal-header-wrap { display: flex; justify-content: space-between; align-items: center; padding: 25px 30px; flex-shrink: 0; }
+  .cal-nav-btn { background: none; border: none; color: rgba(255, 255, 255, 0.4); font-size: 1.2rem; cursor: pointer; padding: 10px; }
+  #cal-title { font-size: 1.6rem; font-weight: bold; color: #fff; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; padding: 0 10px 15px; flex-shrink: 0; }
+  .cal-day-name { font-size: 0.75rem; color: #666; text-align: center; margin-bottom: 10px; }
+  .cal-day { aspect-ratio: 1 / 1.3; border: 1px solid #222; border-radius: 8px; padding: 6px; font-size: 0.9rem; position: relative; display: flex; flex-direction: column; overflow: hidden; }
+  .cal-day.today { border: 2px solid #cc0033; background: rgba(204, 0, 51, 0.1); }
+  .cal-event { margin-top: 2px; color: #fff; font-size: 0.6rem; padding: 2px 4px; border-radius: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-  /* [목록 & 뱃지] */
+  /* 💥 [수정] 목록 보기 - 체크버튼 우측 칼정렬 및 말줄임표 (1, 2번 이미지 대응) */
   .list-page { padding: 10px 20px; }
   .schedule-item { display: flex; align-items: center; padding: 20px 0; border-bottom: 1px solid #222; cursor: pointer; }
   .date { font-weight: bold; color: #cc0033; width: 65px; font-size: 1.1rem; flex-shrink: 0; }
-  
-  /* 💥 기본 뱃지: 테두리만 */
-  .category-badge { 
-    padding: 3px 6px; margin-right: 12px; font-size: 0.7rem; font-weight: 700; 
-    color: #cc0033; border: 1px solid #cc0033; border-radius: 4px; white-space: nowrap; 
-  }
-  /* 💥 선택된 뱃지: 꽉 찬 레드 */
+  .category-badge { padding: 3px 6px; margin-right: 12px; font-size: 0.7rem; font-weight: 700; color: #cc0033; border: 1px solid #cc0033; border-radius: 4px; white-space: nowrap; flex-shrink: 0; }
   .category-badge.active { background: #cc0033; color: #fff; }
-
-  /* 💥 [복구 1] 지나간 스케줄 뱃지 색상 제거 (1번 이미지 참고) */
-  .past-schedules .schedule-item { opacity: 0.4; }
-  .past-schedules .date { color: #666 !important; }
-  .past-schedules .category-badge { color: #666 !important; border-color: #666 !important; background: none !important; }
-  .past-schedules summary { cursor: pointer; font-size: 0.95rem; color: #888; text-align: center; padding: 15px; background: #1a1a1a; border-radius: 12px; margin: 10px 0; font-weight: bold; list-style: none; }
-
-  /* 💥 [복구 2] 캘린더 버튼 가로길이 일치 (2번 이미지 참고) */
-  .detail-content-wrap { padding: 80px 25px 120px; } /* 전체 여백 통일 */
-  .ticket-wrapper { background: #1a1a1a; border: 1.5px dashed #444; border-radius: 12px; padding: 35px 20px 25px; position: relative; margin-bottom: 20px; width: 100%; box-sizing: border-box; }
-  .ticket-label { position: absolute; top: -14px; left: 20px; background: #cc0033; color: #fff; font-size: 0.8rem; font-weight: 900; padding: 6px 15px; border-radius: 4px; }
   
-  .add-cal-btn { 
-    display: block; width: 100%; box-sizing: border-box; /* 💥 가로길이 100% 강제 고정!! */
-    padding: 18px; background: #1a1a1a; border: 1px solid #333; color: #eee; 
-    border-radius: 8px; font-weight: bold; text-align: center; text-decoration: none; font-size: 1rem;
-  }
-
-  /* [달력 & 기타 스타일 유지] */
-  .cal-header-wrap { display: flex; justify-content: space-between; align-items: center; padding: 25px 30px; }
-  .cal-nav-btn { background: none; border: none; color: rgba(255, 255, 255, 0.4); font-size: 1.2rem; cursor: pointer; }
-  #cal-title { font-size: 1.6rem; font-weight: bold; }
-  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; padding: 0 10px 15px; }
-  .cal-day { aspect-ratio: 1 / 1.3; border: 1px solid #222; border-radius: 8px; padding: 6px; font-size: 0.9rem; position: relative; display: flex; flex-direction: column; }
-  .cal-day.today { border: 2.5px solid #cc0033; background: rgba(204, 0, 51, 0.1); }
-  .cal-event { margin-top: 2px; color: #fff; font-size: 0.6rem; padding: 2px 4px; border-radius: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .data-mgmt { margin: 40px 10px 100px; padding: 25px 20px; border: 1px solid #222; border-radius: 12px; background: #0a0a0a; text-align: center; }
-  .data-btn-row { display: flex; gap: 10px; }
-  .data-btn { flex: 1; padding: 12px; background: #1a1a1a; border: 1px solid #333; color: #777; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
-  .lyrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 20px; }
-  .lyrics-item { background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.2); padding: 30px 10px; border-radius: 12px; text-align: center; font-weight: bold; cursor: pointer; }
-  .check-btn { width: 22px; height: 22px; border: 2px solid #444; border-radius: 50%; margin-left: 10px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; color: transparent; cursor: pointer; }
+  /* 💥 제목 영역: 남은 공간 다 채우고 넘치면 말줄임표(...) 처리!! */
+  .title { font-size: 1.1rem; flex-grow: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #eee; padding-right: 10px; }
+  
+  /* 💥 체크 버튼: 무조건 우측 끝에 고정!! */
+  .check-btn { width: 22px; height: 22px; border: 2px solid #444; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; color: transparent; cursor: pointer; margin-left: auto; }
   .check-btn.checked { background: #cc0033; border-color: #cc0033; color: #fff; }
   .check-btn.checked::after { content: '✓'; }
-  .footer { padding: 20px; text-align: center; border-top: 1px solid #222; flex-shrink: 0; }
+
+  /* [가사 탭 & 데이터 관리] */
+  .lyrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 20px; }
+  .lyrics-item { background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.2); padding: 30px 10px; border-radius: 12px; text-align: center; font-weight: bold; cursor: pointer; }
+  .data-mgmt { margin: 40px 0 100px; padding: 25px 20px; border: 1px solid #222; border-radius: 12px; background: #0a0a0a; text-align: center; }
+  .data-btn-row { display: flex; gap: 10px; }
+  .data-btn { flex: 1; padding: 12px; background: #1a1a1a; border: 1px solid #333; color: #777; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
+
+  /* [상세 & 가사 페이지] */
   .detail-page, .lyrics-detail { display: none; background: #121212; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; overflow-y: auto; color: #fff; }
-  .floating-back-btn { position: fixed; top: 20px; left: 50%; margin-left: -225px; width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.8); color: #fff; z-index: 1100; border: none; display: flex; align-items: center; justify-content: center; }
+  .floating-back-btn { position: fixed; top: 20px; left: 50%; margin-left: -225px; width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.8); color: #fff; z-index: 1100; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
   @media (max-width: 480px) { .floating-back-btn { left: 15px; margin-left: 0; } }
+  .lyrics-title { font-size: 2.2rem; font-weight: 900; color: #cc0033; margin: 80px 0 30px; text-align: center; }
+  .lyrics-content { line-height: 2.2; font-size: 1.05rem; text-align: center; color: #bbb; white-space: pre-line; padding: 0 20px 100px; }
+  .footer { padding: 20px; text-align: center; border-top: 1px solid #222; flex-shrink: 0; }
 </style>
 </head>
 <body>
 <div class="app-wrap">
   <div id="main-view" style="display: flex; flex-direction: column; height: 100%;">
-    <div class="header"><span class="main-title">DRAGON PONY SCHEDULE</span><a href="https://www.instagram.com/dragonpony_/" target="_blank" class="sub-title-link" style="text-decoration:none;">@dragonpony_</a></div>
+    <div class="header">
+      <span class="main-title">DRAGON PONY SCHEDULE</span>
+      <a href="https://www.instagram.com/dragonpony_/" target="_blank" class="sub-title-link">@dragonpony_</a>
+    </div>
     <div class="tab-wrap">
       <button class="tab-btn active" onclick="switchTab('calendar')" id="btn-calendar">월간 스케줄</button>
       <button class="tab-btn" onclick="switchTab('list')" id="btn-list">목록 보기</button>
       <button class="tab-btn" onclick="switchTab('lyrics')" id="btn-lyrics">미발매곡 가사</button>
     </div>
     <div id="calendar-view" class="view-content active"><div class="cal-header-wrap"><button class="cal-nav-btn" onclick="prevMonth()">◀</button><span id="cal-title"></span><button class="cal-nav-btn" onclick="nextMonth()">▶</button></div><div class="cal-grid" id="cal-grid"></div></div>
-    <div id="list-view" class="view-content"><div id="schedule-list" class="list-page"></div><div class="data-mgmt"><div class="data-mgmt-title">CHECK DATA BACKUP</div><div class="data-btn-row"><button class="data-btn" onclick="exportData()">기록 내보내기</button><button class="data-btn" onclick="importData()">기록 가져오기</button></div></div></div>
+    <div id="list-view" class="view-content"><div id="schedule-list"></div><div class="data-mgmt"><div class="data-mgmt-title" style="color:#444; margin-bottom:15px; font-weight:bold; letter-spacing:1px;">CHECK DATA BACKUP</div><div class="data-btn-row"><button class="data-btn" onclick="exportData()">기록 내보내기</button><button class="data-btn" onclick="importData()">기록 가져오기</button></div></div></div>
     <div id="lyrics-view" class="view-content"><div class="lyrics-grid" id="lyrics-grid"></div></div>
     <div class="footer"><a href="#" style="color:#444; font-size:0.85rem; text-decoration:none;">@dragonponysuzip</a></div>
   </div>
 
   <div class="detail-page" id="detail-view">
     <button class="floating-back-btn" onclick="closeDetail()">◀</button>
-    <div class="detail-content-wrap">
+    <div style="padding: 80px 25px 20px;">
       <div id="view-date" style="color:#cc0033; font-weight:900; font-size:1.4rem; margin-bottom:8px;"></div>
       <div id="view-title" style="font-size:2.2rem; font-weight:900; line-height:1.2; margin-bottom:30px;"></div>
-      <div class="ticket-wrapper"><div class="ticket-label">INFO</div><div id="view-text" style="line-height:2.0; color:#ddd; white-space:pre-line;"></div></div>
-      <div id="add-to-cal-btn-area"></div>
+      <div id="view-text" style="line-height:2.0; color:#ddd; white-space:pre-line; background:#1a1a1a; border:1.5px dashed #444; padding:30px 20px; border-radius:12px;"></div>
+      <div id="add-to-cal-btn-area" style="margin-top:20px; padding-bottom:120px;"></div>
     </div>
   </div>
 
-  <div class="lyrics-detail" id="lyrics-detail-view"><button class="floating-back-btn" onclick="closeLyrics()">◀</button><div id="l-title" style="font-size:2.2rem; font-weight:900; color:#cc0033; margin:80px 0 30px; text-align:center;"></div><div id="l-content" style="text-align:center; line-height:2.2; color:#bbb; white-space:pre-line; padding:0 20px 100px;"></div></div>
+  <div class="lyrics-detail" id="lyrics-detail-view">
+    <button class="floating-back-btn" onclick="closeLyrics()">◀</button>
+    <div id="l-title" class="lyrics-title"></div>
+    <div id="l-content" class="lyrics-content"></div>
+  </div>
 </div>
 
 <script>
@@ -145,15 +137,11 @@
   function renderList() {
     const list = document.getElementById('schedule-list'); list.innerHTML = '';
     const att = getAttendance(); const today = new Date(); today.setHours(0,0,0,0);
-    if(currentFilter) {
-      const n = document.createElement('div'); n.className = 'filter-notice';
-      n.innerHTML = `[<b>${currentFilter}</b>] 스케줄만 모아보는 중 🤘<br><span class="reset-btn" onclick="toggleFilter('')">전체 스케줄 보기</span>`;
-      list.appendChild(n);
-    }
     const filtered = currentFilter ? scheduleData.filter(d => d.typeStr === currentFilter) : scheduleData;
     const upW = document.createElement('div'), pastD = document.createElement('details');
     pastD.className = 'past-schedules'; pastD.innerHTML = '<summary>▼ 지나간 스케줄 보기</summary>';
     const pastW = document.createElement('div'); pastD.appendChild(pastW);
+
     filtered.forEach(item => {
       const p = item.dateStr.split('-')[0].split('/'); const itemD = new Date(currentYear, p[0]-1, p[1]);
       const div = document.createElement('div'); div.className = 'schedule-item';
@@ -184,7 +172,7 @@
       const cell = new Date(y, m-1, d); const evs = scheduleData.filter(ev => isDateInRange(m, d, ev.dateStr));
       const dayEl = document.createElement('div'); dayEl.className = 'cal-day' + (cell.getTime()===today.getTime()?' today':'');
       let evH = ''; evs.forEach(ev => evH += `<div class="cal-event" style="background:${cell < today ? '#333' : '#cc0033'}" onclick="event.stopPropagation(); openDetail('${ev.dateStr}','${ev.titleStr}','${ev.imgUrl}','${ev.descStr}')">${ev.titleStr}</div>`);
-      dayEl.innerHTML = (cell.getTime()===today.getTime()?'<span class="today-tag">TODAY</span>':'') + `<span>${d}</span>` + evH; g.appendChild(dayEl);
+      dayEl.innerHTML = (cell.getTime()===today.getTime()?'<span style="font-size:0.5rem; color:#cc0033; position:absolute; top:4px; right:4px; font-weight:bold;">TODAY</span>':'') + `<span>${d}</span>` + evH; g.appendChild(dayEl);
     }
   }
 
@@ -199,17 +187,15 @@
 
   function prevMonth() { currentMonth--; if(currentMonth < 1) { currentMonth=12; currentYear--; } renderCalendar(currentYear, currentMonth); }
   function nextMonth() { currentMonth++; if(currentMonth > 12) { currentMonth=1; currentYear++; } renderCalendar(currentYear, currentMonth); }
-  
   function openDetail(date, title, img, txt) {
     document.getElementById('main-view').style.display = 'none'; document.getElementById('detail-view').style.display = 'block';
     document.getElementById('view-date').innerText = date; document.getElementById('view-title').innerText = title;
-    let ft = String(txt).replace(/\n/g, '<br>');
-    ft = ft.replace(/(https?:\/\/[^\s<>]+)/g, u => `<a href="${u}" target="_blank">인스타그램 바로가기 ↗</a>`);
+    let ft = String(txt).replace(/\n/g, '<br>').replace(/(https?:\/\/[^\s<>]+)/g, u => `<a href="${u}" target="_blank">인스타그램 바로가기 ↗</a>`);
     document.getElementById('view-text').innerHTML = ft;
     const sp = date.split('-')[0]; const m = sp.split('/')[0].padStart(2, '0'), d = sp.split('/')[1].padStart(2, '0');
     const ics = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nDTSTART:${currentYear}${m}${d}T090000Z\nSUMMARY:[DP] ${title}\nDESCRIPTION:${txt.replace(/\n/g, '\\n')}\nEND:VEVENT\nEND:VCALENDAR`;
     const url = URL.createObjectURL(new Blob([ics], {type:'text/calendar'}));
-    document.getElementById('add-to-cal-btn-area').innerHTML = `<a href="${url}" download="dp.ics" class="add-cal-btn">🗓️ 아이폰 캘린더에 일정 추가하기</a>`;
+    document.getElementById('add-to-cal-btn-area').innerHTML = `<a href="${url}" download="dp.ics" style="display:block; width:100%; padding:18px; background:#1a1a1a; border:1px solid #333; color:#eee; border-radius:8px; font-weight:bold; text-align:center; text-decoration:none;">🗓️ 아이폰 캘린더에 일정 추가하기</a>`;
   }
   function closeDetail() { document.getElementById('detail-view').style.display = 'none'; document.getElementById('main-view').style.display = 'flex'; }
   function closeLyrics() { document.getElementById('lyrics-detail-view').style.display = 'none'; document.getElementById('main-view').style.display = 'flex'; }
