@@ -2,13 +2,13 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DragonPony Schedule v4.5</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>DragonPony Schedule v4.6</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
-  body { font-family: 'Pretendard', sans-serif; margin: 0; background-color: #000; height: 100vh; overflow: hidden; }
+  body { font-family: 'Pretendard', sans-serif; margin: 0; background-color: #000; height: 100vh; overflow: hidden; -webkit-tap-highlight-color: transparent; }
   .app-wrap { max-width: 480px; margin: 0 auto; background: #121212; color: #fff; height: 100%; position: relative; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 0 15px rgba(0,0,0,0.5); }
   
   .view-content::-webkit-scrollbar, .lyrics-detail::-webkit-scrollbar, .detail-page::-webkit-scrollbar { width: 0px; background: transparent; } 
@@ -16,31 +16,19 @@
   .view-content { flex-grow: 1; height: 0; overflow-y: auto; display: none; background: #121212; padding-bottom: 120px; }
   .view-content.active { display: block; }
 
-  /* 💥 [최종 수정] 대제목 사이즈 50% 축소 (모바일 한 줄 수호!!) */
+  /* [헤더 & 탭] */
   .header { background: #0a0a0a; color: #fff; padding: 25px 20px 15px; text-align: center; border-bottom: 1px solid #222; flex-shrink: 0; }
-  .main-title { 
-    display: block; font-family: 'Bebas Neue', sans-serif; 
-    font-size: 1.4rem; /* 💥 기존 2.4rem에서 ㅈㄴ게 서늘하게 절반 수준으로 축소!! */
-    letter-spacing: 2px; /* 자간도 살짝 조여서 한 줄 수호쇼!! */
-    color: #fff; line-height: 1; 
-  }
+  .main-title { display: block; font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 2px; color: #fff; line-height: 1; }
   .sub-title-link { display: block; font-size: 0.75rem; color: #666; text-decoration: none; margin-top: 6px; letter-spacing: 0.5px; }
-  
-  /* [탭 버튼] */
   .tab-wrap { display: flex; border-bottom: 1px solid #222; flex-shrink: 0; background: #121212; }
   .tab-btn { flex: 1; padding: 15px 0; border: none; background: none; font-size: 0.95rem; font-weight: bold; color: #555; cursor: pointer; transition: 0.2s; }
   .tab-btn.active { color: #fff; border-bottom: 3px solid #cc0033; }
-
-  /* [안내 박스] */
-  .filter-notice { text-align: center; padding: 18px 10px; background: #1a1a1a; border-radius: 12px; margin: 15px 0 25px; font-size: 0.95rem; color: #bbb; border: 1.5px dashed #444; }
-  .filter-notice span.highlight { color: #cc0033; font-weight: bold; }
-  .filter-notice .reset-btn { cursor: pointer; text-decoration: underline; display: inline-block; margin-top: 8px; color: #888; font-size: 0.85rem; }
 
   /* [달력] */
   .cal-header-wrap { display: flex; justify-content: space-between; align-items: center; padding: 20px 30px; flex-shrink: 0; }
   .cal-nav-btn { background: none; border: none; color: rgba(255, 255, 255, 0.4); font-size: 1.2rem; cursor: pointer; padding: 10px; }
   #cal-title { font-size: 1.4rem; font-weight: bold; }
-  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; padding: 0 15px 15px; flex-shrink: 0; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; padding: 0 15px 15px; flex-shrink: 0; }
   .cal-day-name { font-size: 0.75rem; color: #666; text-align: center; margin-bottom: 10px; }
   .cal-day { aspect-ratio: 1 / 1.6; border: 1px solid #222; border-radius: 8px; padding: 8px 4px; font-size: 0.9rem; position: relative; display: flex; flex-direction: column; align-items: center; overflow: hidden; }
   .cal-day.today { border: 2.5px solid #cc0033; background: rgba(204, 0, 51, 0.1); }
@@ -49,26 +37,43 @@
   .cal-event-list { flex-grow: 1; display: flex; flex-direction: column; justify-content: flex-end; width: 100%; gap: 3px; margin-top: 5px; overflow: hidden; }
   .cal-event { color: #fff; font-size: 0.6rem; padding: 2px 4px; border-radius: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; box-sizing: border-box; text-align: center; }
 
-  /* [목록] */
+  /* [목록 & 💥 체크박스 수정] */
   .list-page { padding: 10px 25px; }
   .schedule-item { display: flex; align-items: center; padding: 22px 0; border-bottom: 1px solid #222; cursor: pointer; }
   .date { font-weight: bold; color: #cc0033; width: 60px; font-size: 1.05rem; flex-shrink: 0; }
   .category-badge { padding: 3px 6px; margin-right: 15px; font-size: 0.7rem; font-weight: 700; color: #cc0033; border: 1px solid #cc0033; border-radius: 4px; white-space: nowrap; flex-shrink: 0; }
   .category-badge.active { background: #cc0033; color: #fff; border-color: #cc0033; }
   .title { font-size: 1.05rem; flex-grow: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #eee; padding-right: 15px; }
-  .check-btn { width: 24px; height: 22px; border: 2px solid #444; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; color: transparent; cursor: pointer; margin-left: auto; }
+  
+  .check-btn { 
+    width: 24px; height: 24px; border: 2px solid #444; border-radius: 50%; 
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center; 
+    font-size: 12px; color: transparent; cursor: pointer; margin-left: auto;
+    background: transparent; z-index: 10; /* 터치 우선순위 확보 */
+  }
   .check-btn.checked { background: #cc0033; border-color: #cc0033; color: #fff; }
   .check-btn.checked::after { content: '✓'; }
 
-  /* [데이터 관리 & 기타] */
+  /* [가사 탭 & 데이터 관리] */
+  .lyrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 20px; }
+  .lyrics-item { background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.2); padding: 30px 10px; border-radius: 12px; text-align: center; font-weight: bold; cursor: pointer; }
   .data-mgmt { margin: 40px 0 100px; padding: 25px 20px; border: 1px solid #222; border-radius: 12px; background: #0a0a0a; text-align: center; }
   .data-btn-row { display: flex; gap: 10px; }
   .data-btn { flex: 1; padding: 12px; background: #1a1a1a; border: 1px solid #333; color: #777; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
-  .lyrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 20px; }
-  .lyrics-item { background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.2); padding: 30px 10px; border-radius: 12px; text-align: center; font-weight: bold; cursor: pointer; }
-  .footer { padding: 20px; text-align: center; border-top: 1px solid #222; flex-shrink: 0; }
+
+  /* [상세 & 가사 💥 모바일 뒤로가기 버튼 수호] */
   .detail-page, .lyrics-detail { display: none; background: #121212; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; overflow-y: auto; color: #fff; }
-  .floating-back-btn { position: fixed; top: 20px; left: 50%; margin-left: -225px; width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.8); color: #fff; z-index: 1100; border: none; display: flex; align-items: center; justify-content: center; }
+  .floating-back-btn { 
+    position: sticky; /* fixed에서 sticky로 변경해서 가출 방지!! */
+    top: 20px; left: 20px; width: 40px; height: 40px; border-radius: 50%; 
+    background: rgba(0,0,0,0.8); color: #fff; z-index: 1100; border: 1px solid #333; 
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+    margin: 20px 0 -40px 20px; /* 상세 페이지 컨텐츠와 겹치지 않게 여백 조정쇼!! */
+  }
+  
+  .filter-notice { text-align: center; padding: 22px 10px; background: #1a1a1a; border-radius: 12px; margin: 15px 0 25px; font-size: 0.95rem; color: #bbb; border: 1.5px dashed #444; }
+  .filter-notice span.highlight { color: #cc0033; font-weight: bold; }
+  .footer { padding: 20px; text-align: center; border-top: 1px solid #222; flex-shrink: 0; }
 </style>
 </head>
 <body>
@@ -85,6 +90,7 @@
     <div id="lyrics-view" class="view-content"><div class="lyrics-grid" id="lyrics-grid"></div></div>
     <div class="footer"><a href="#" style="color:#444; font-size:0.85rem; text-decoration:none;">@dragonponysuzip</a></div>
   </div>
+
   <div class="detail-page" id="detail-view">
     <button class="floating-back-btn" onclick="closeDetail()">◀</button>
     <div style="padding: 80px 25px 20px;">
@@ -94,15 +100,21 @@
       <div id="add-to-cal-btn-area" style="margin-top:20px; padding-bottom:120px;"></div>
     </div>
   </div>
-  <div class="lyrics-detail" id="lyrics-detail-view"><button class="floating-back-btn" onclick="closeLyrics()">◀</button><div id="l-title" style="font-size:2.2rem; font-weight:900; color:#cc0033; margin:80px 0 30px; text-align:center;"></div><div id="l-content" style="text-align:center; line-height:2.2; color:#bbb; white-space:pre-line; padding:0 20px 100px;"></div></div>
+
+  <div class="lyrics-detail" id="lyrics-detail-view">
+    <button class="floating-back-btn" onclick="closeLyrics()">◀</button>
+    <div id="l-title" style="font-size:2.2rem; font-weight:900; color:#cc0033; margin:80px 0 30px; text-align:center;"></div>
+    <div id="l-content" style="text-align:center; line-height:2.2; color:#bbb; white-space:pre-line; padding:0 20px 100px;"></div>
+  </div>
 </div>
+
 <script>
   let currentYear = new Date().getFullYear(), currentMonth = new Date().getMonth() + 1;
   let scheduleData = [], lyricsData = [], currentFilter = '';
+  
   function getAttendance() { const s = localStorage.getItem('dp_attendance'); return s ? JSON.parse(s) : {}; }
   function switchTab(t) { document.querySelectorAll('.tab-btn, .view-content').forEach(e => e.classList.remove('active')); document.getElementById('btn-'+t).classList.add('active'); document.getElementById(t+'-view').classList.add('active'); }
-  function exportData() { const d = localStorage.getItem('dp_attendance'); if(!d || d === '{}') return alert("내보낼 기록이 없세혁!"); navigator.clipboard.writeText(btoa(encodeURIComponent(d))).then(() => alert("체크 기록이 복사되었어요!\n메모장이나 카톡에 붙여넣어 보관하세혁♡,,♡")); }
-  function importData() { const c = prompt("복사해둔 백업 코드를 입력해주세혁:"); if(!c) return; try { localStorage.setItem('dp_attendance', decodeURIComponent(atob(c))); alert("기록 복구 성공! 🎸"); location.reload(); } catch(e) { alert("잘못된 코드인 것 같아요. 다시 확인해주세혁ㅠ..ㅠ!"); } }
+
   async function fetchData() {
     const sId = '1UKMplA90Fz4x3ueJtjRSOGOK1bD1c74GkK-wo573dG4', lId = '1zfCSs8P8qEtDaWQlYFaCb7f1-roga3uyGLeWGDtUfME';
     try {
@@ -113,7 +125,18 @@
       renderCalendar(currentYear, currentMonth); renderList(); renderLyrics();
     } catch(e) { console.error(e); }
   }
+
   function toggleFilter(type) { currentFilter = (currentFilter === type) ? '' : type; renderList(); }
+
+  // 💥 [복구] 체크박스 클릭 로직 전면 수정 (먹통 해결쇼!!)
+  function toggleCheck(title, event) {
+    event.stopPropagation(); // 부목 요소 클릭 방지!!
+    const att = getAttendance();
+    att[title] = !att[title];
+    localStorage.setItem('dp_attendance', JSON.stringify(att));
+    renderList(); // UI 즉시 갱신!!
+  }
+
   function renderList() {
     const list = document.getElementById('schedule-list'); list.innerHTML = '';
     const att = getAttendance(); const today = new Date(); today.setHours(0,0,0,0);
@@ -126,16 +149,25 @@
     const upW = document.createElement('div'), pastD = document.createElement('details');
     pastD.className = 'past-schedules'; pastD.innerHTML = '<summary style="cursor:pointer; text-align:center; padding:15px; color:#888; background:#1a1a1a; border-radius:12px; font-weight:bold; list-style:none; margin:10px 0;">▼ 지나간 스케줄 보기</summary>';
     const pastW = document.createElement('div'); pastD.appendChild(pastW);
+
     filtered.forEach(item => {
       const p = item.dateStr.split('-')[0].split('/'); const itemD = new Date(currentYear, p[0]-1, p[1]);
       const div = document.createElement('div'); div.className = 'schedule-item';
       div.onclick = () => openDetail(item.dateStr, item.titleStr, item.imgUrl, item.descStr);
       const bc = currentFilter === item.typeStr ? 'category-badge active' : 'category-badge';
-      div.innerHTML = `<div class="date">${item.dateStr}</div><div class="${bc}" onclick="event.stopPropagation(); toggleFilter('${item.typeStr}')">${item.typeStr || '기타'}</div><div class="title">${item.titleStr}</div><div class="check-btn ${att[item.titleStr]?'checked':''}" onclick="event.stopPropagation(); att[item.titleStr]=!att[item.titleStr]; localStorage.setItem('dp_attendance', JSON.stringify(att)); renderList();"></div>`;
+      
+      div.innerHTML = `
+        <div class="date">${item.dateStr}</div>
+        <div class="${bc}" onclick="event.stopPropagation(); toggleFilter('${item.typeStr}')">${item.typeStr || '기타'}</div>
+        <div class="title">${item.titleStr}</div>
+        <div class="check-btn ${att[item.titleStr]?'checked':''}" onclick="toggleCheck('${item.titleStr}', event)"></div>
+      `;
+      
       if(itemD < today) { div.style.opacity = '0.4'; div.querySelector('.date').style.color = '#666'; div.querySelector('.category-badge').style.borderColor = '#666'; div.querySelector('.category-badge').style.color = '#666'; pastW.appendChild(div); } else upW.appendChild(div);
     });
     list.appendChild(upW); if(pastW.children.length > 0) list.appendChild(pastD);
   }
+
   function isDateInRange(m, d, str) {
     const p = str.split('-'); const s = p[0].split('/'); if(parseInt(s[0])===m && parseInt(s[1])===d) return true;
     if(p[1]) { const e = p[1].split('/'); const cell = new Date(currentYear, m-1, d).getTime(); const start = new Date(currentYear, s[0]-1, s[1]).getTime(), end = e.length===1 ? new Date(currentYear, s[0]-1, e[0]).getTime() : new Date(currentYear, e[0]-1, e[1]).getTime(); return cell >= start && cell <= end; }
@@ -158,7 +190,7 @@
     const g = document.getElementById('lyrics-grid'); g.innerHTML = '';
     lyricsData.forEach(s => {
       const d = document.createElement('div'); d.className = 'lyrics-item'; d.innerText = s.title;
-      d.onclick = () => { document.getElementById('l-title').innerText = s.title; document.getElementById('l-content').innerText = s.content; document.getElementById('lyrics-detail-view').style.display = 'block'; document.getElementById('main-view').style.display = 'none'; };
+      d.onclick = () => { document.getElementById('l-title').innerText = s.title; document.getElementById('l-content').innerText = s.content; document.getElementById('lyrics-detail-view').style.display = 'block'; document.getElementById('main-view').style.display = 'none'; document.getElementById('lyrics-detail-view').scrollTop = 0; };
       g.appendChild(d);
     });
   }
@@ -173,9 +205,12 @@
     const ics = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nDTSTART:${currentYear}${m}${d}T090000Z\nSUMMARY:[DP] ${title}\nDESCRIPTION:${txt.replace(/\n/g, '\\n')}\nEND:VEVENT\nEND:VCALENDAR`;
     const url = URL.createObjectURL(new Blob([ics], {type:'text/calendar'}));
     document.getElementById('add-to-cal-btn-area').innerHTML = `<a href="${url}" download="dp.ics" style="display:block; width:100%; padding:18px; background:#1a1a1a; border:1px solid #333; color:#eee; border-radius:8px; font-weight:bold; text-align:center; text-decoration:none; box-sizing:border-box;">🗓️ 아이폰 캘린더에 일정 추가하기</a>`;
+    document.getElementById('detail-view').scrollTop = 0;
   }
   function closeDetail() { document.getElementById('detail-view').style.display = 'none'; document.getElementById('main-view').style.display = 'flex'; }
   function closeLyrics() { document.getElementById('lyrics-detail-view').style.display = 'none'; document.getElementById('main-view').style.display = 'flex'; }
+  function exportData() { const d = localStorage.getItem('dp_attendance'); if(!d || d === '{}') return alert("내보낼 기록이 없세혁!"); navigator.clipboard.writeText(btoa(encodeURIComponent(d))).then(() => alert("체크 기록이 복사되었어요!\n메모장이나 카톡에 붙여넣어 보관하세혁♡,,♡")); }
+  function importData() { const c = prompt("복사해둔 백업 코드를 입력해주세혁:"); if(!c) return; try { localStorage.setItem('dp_attendance', decodeURIComponent(atob(c))); alert("기록 복구 성공! 🎸"); location.reload(); } catch(e) { alert("잘못된 코드인 것 같아요. 다시 확인해주세혁ㅠ..ㅠ!"); } }
   window.onload = fetchData;
 </script>
 </body>
