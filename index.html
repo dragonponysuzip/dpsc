@@ -3,280 +3,193 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DragonPony Schedule v2.4</title>
-
+<title>DragonPony Schedule v2.7</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
-
 <style>
-  /* [BASE STYLE] */
   body { font-family: 'Pretendard', sans-serif; margin: 0; background-color: #000; height: 100vh; overflow: hidden; }
   .app-wrap { max-width: 480px; margin: 0 auto; background: #121212; color: #fff; height: 100%; position: relative; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 0 15px rgba(0,0,0,0.5); }
-  
+  .view-content::-webkit-scrollbar { width: 0px; background: transparent; } 
+  .view-content { -ms-overflow-style: none; scrollbar-width: none; flex-grow: 1; height: 0; overflow-y: auto; display: none; background: #121212; padding-bottom: 120px; }
+  .view-content.active { display: block; }
   .header { background: #0a0a0a; color: #fff; padding: 25px 20px; text-align: center; border-bottom: 1px solid #222; flex-shrink: 0; }
   .main-title { display: block; font-family: 'Bebas Neue', sans-serif; font-size: 2.0rem; letter-spacing: 3px; color: #fff; text-shadow: 0 0 10px rgba(204, 0, 51, 0.4); }
-  .sub-title-link { font-size: 0.85rem; font-weight: 300; color: #888; text-decoration: none; letter-spacing: 0.5px; }
-
-  /* [TAB SYSTEM] */
+  .sub-title-link { font-size: 0.85rem; font-weight: 300; color: #888; text-decoration: none; }
   .tab-wrap { display: flex; border-bottom: 1px solid #222; flex-shrink: 0; background: #121212; }
   .tab-btn { flex: 1; padding: 15px 0; border: none; background: none; font-size: 0.95rem; font-weight: bold; color: #555; cursor: pointer; transition: 0.2s; }
   .tab-btn.active { color: #fff; border-bottom: 3px solid #cc0033; }
-  
-  .view-content { flex-grow: 1; height: 0; overflow-y: auto; display: none; background: #121212; padding-bottom: 120px; }
-  .view-content.active { display: block; }
-
-  /* [LYRICS TAB STYLE - 환하게!!] */
   .lyrics-page { padding: 20px; }
   .lyrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .lyrics-item { 
-    background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.2);
-    padding: 30px 15px; border-radius: 12px; text-align: center; cursor: pointer; transition: 0.2s;
-    display: flex; align-items: center; justify-content: center; font-weight: bold; color: #fff; font-size: 1.05rem;
-  }
-  .lyrics-item:active { transform: scale(0.93); background: rgba(204, 0, 51, 0.3); border-color: #cc0033; }
-
-  /* [SCHEDULE LIST STYLE] */
+  .lyrics-item { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.15); padding: 30px 10px; border-radius: 12px; text-align: center; cursor: pointer; font-weight: bold; color: #fff; font-size: 1.05rem; display: flex; align-items: center; justify-content: center; }
   .list-page { padding: 10px 20px; }
   .schedule-item { display: flex; align-items: center; padding: 20px 10px; border-bottom: 1px solid #222; cursor: pointer; }
   .date { font-weight: bold; color: #cc0033; width: 65px; font-size: 1.1rem; flex-shrink: 0; }
   .category-badge { padding: 3px 6px; margin-right: 12px; font-size: 0.7rem; font-weight: 700; color: #cc0033; border: 1px solid #cc0033; border-radius: 4px; }
   .title { font-size: 1.1rem; font-weight: 500; color: #eee; flex-grow: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-  /* [CALENDAR STYLE] */
-  .calendar-wrap { padding: 15px; }
-  .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-weight: bold; font-size: 1.2rem; }
-  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
-  .cal-day { min-height: 70px; border: 1px solid #222; border-radius: 5px; padding: 4px 2px; font-size: 0.9rem; display: flex; flex-direction: column; position: relative; }
-  .cal-day.today { border: 2px solid #cc0033; background: rgba(204, 0, 51, 0.1); }
-  .cal-event { margin-top: auto; color: #fff; font-size: 0.65rem; padding: 4px 2px; border-radius: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
-
-  /* [PAGES] */
+  .check-btn { width: 22px; height: 22px; border: 2px solid #444; border-radius: 50%; margin-left: 10px; flex-shrink: 0; transition: 0.3s; display: flex; align-items: center; justify-content: center; font-size: 12px; color: transparent; cursor: pointer; }
+  .check-btn.checked { background: #cc0033; border-color: #cc0033; color: #fff; }
+  .check-btn.checked::after { content: '✓'; }
+  .past-schedules { margin-top: 20px; border-top: 2px dashed #333; padding-top: 15px; }
+  .past-schedules summary { cursor: pointer; font-size: 0.95rem; color: #888; font-weight: bold; list-style: none; text-align: center; padding: 12px; background: #1a1a1a; border-radius: 8px; margin-bottom: 10px; }
+  .data-mgmt { margin: 40px 10px 100px 10px; padding: 20px; border: 1px solid #222; border-radius: 12px; background: #0a0a0a; text-align: center; }
+  .data-btn { width: 100%; padding: 12px; margin: 5px 0; background: #1a1a1a; border: 1px solid #333; color: #888; border-radius: 6px; cursor: pointer; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; padding: 15px; }
+  .cal-day { min-height: 70px; border: 1px solid #222; border-radius: 5px; padding: 4px 2px; font-size: 0.9rem; }
+  .cal-day.today { border: 2px solid #cc0033; }
+  .cal-event { margin-top: 2px; color: #fff; font-size: 0.65rem; padding: 4px 2px; border-radius: 4px; overflow: hidden; text-overflow: ellipsis; }
   .detail-page, .lyrics-detail { display: none; background: #121212; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; overflow-y: auto; color: #fff; }
-  .floating-back-btn { position: fixed; top: 20px; left: 20px; width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.8); color: #fff; border: 1px solid rgba(255,255,255,0.2); z-index: 1100; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-
+  .floating-back-btn { position: fixed; top: 20px; left: 15px; width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.8); color: #fff; border: 1px solid rgba(255,255,255,0.2); z-index: 1100; display: flex; align-items: center; justify-content: center; }
   .lyrics-title { font-size: 2.2rem; font-weight: 900; color: #cc0033; margin: 80px 0 30px; text-align: center; }
   .lyrics-content { line-height: 2.2; font-size: 1.05rem; text-align: center; color: #bbb; white-space: pre-line; padding: 0 20px 100px; }
-  
-  .hero-section { position: relative; width: 100%; min-height: 350px; background: #1a1a1a; }
-  .d-image img { width: 100%; display: block; object-fit: cover; min-height: 350px; }
-  .hero-title-area { position: absolute; bottom: 30px; left: 20px; right: 20px; z-index: 2; }
-  .d-date { color: #cc0033; font-weight: 900; font-size: 1.4rem; }
-  .d-title { font-size: 2.2rem; font-weight: 900; line-height: 1.2; }
-  .ticket-section { padding: 20px 20px 120px; }
-  .ticket-wrapper { background: #1a1a1a; border: 2px dashed #444; border-radius: 12px; padding: 35px 20px 25px; position: relative; }
-  .ticket-label { position: absolute; top: -14px; left: 20px; background: #cc0033; color: #fff; font-size: 0.8rem; font-weight: 900; padding: 6px 15px; border-radius: 4px; }
-  .add-cal-btn { display: block; width: 100%; padding: 15px; background: #1a1a1a; border: 1px solid #333; color: #eee; border-radius: 8px; font-weight: bold; text-align: center; text-decoration: none; margin-top: 20px; }
-
   .footer { padding: 15px; text-align: center; border-top: 1px solid #222; flex-shrink: 0; }
-  .insta-footer-link { font-size: 0.85rem; color: #777; text-decoration: none; }
 </style>
 </head>
 <body>
-
 <div class="app-wrap">
   <div id="main-view" style="display: flex; flex-direction: column; height: 100%;">
     <div class="header">
-      <span class="main-title">DRAGON PONY ARCHIVE</span>
+      <span class="main-title">DRAGON PONY SCHEDULE</span>
       <a href="https://www.instagram.com/dragonpony_/" target="_blank" class="sub-title-link">@dragonpony_</a>
     </div>
-
     <div class="tab-wrap">
-      <button class="tab-btn active" id="btn-calendar" onclick="switchTab('calendar')">월간 스케줄</button>
-      <button class="tab-btn" id="btn-list" onclick="switchTab('list')">목록 보기</button>
-      <button class="tab-btn" id="btn-lyrics" onclick="switchTab('lyrics')">미발매곡 가사</button>
+      <button class="tab-btn active" onclick="switchTab('calendar')" id="btn-calendar">월간 스케줄</button>
+      <button class="tab-btn" onclick="switchTab('list')" id="btn-list">목록 보기</button>
+      <button class="tab-btn" onclick="switchTab('lyrics')" id="btn-lyrics">미발매곡 가사</button>
     </div>
-
-    <div id="calendar-view" class="view-content active">
-      <div class="calendar-wrap">
-        <div class="cal-header">
-          <button style="background:none; border:none; color:#666; font-size:1.2rem; cursor:pointer;" onclick="prevMonth()">◀</button>
-          <span id="cal-title"></span>
-          <button style="background:none; border:none; color:#666; font-size:1.2rem; cursor:pointer;" onclick="nextMonth()">▶</button>
-        </div>
-        <div class="cal-grid" id="cal-grid"></div>
-      </div>
-    </div>
-
-    <div id="list-view" class="view-content">
-      <div id="schedule-list" class="list-page"></div>
-    </div>
-
-    <div id="lyrics-view" class="view-content">
-      <div class="lyrics-page"><div class="lyrics-grid" id="lyrics-grid"></div></div>
-    </div>
-
-    <div class="footer">
-      <a href="https://x.com/dragonponysuzip/" target="_blank" class="insta-footer-link">@dragonponysuzip</a>
-    </div>
+    <div id="calendar-view" class="view-content active"><div class="cal-header" style="text-align:center; padding:15px;"><button onclick="prevMonth()">◀</button> <span id="cal-title"></span> <button onclick="nextMonth()">▶</button></div><div class="cal-grid" id="cal-grid"></div></div>
+    <div id="list-view" class="view-content"><div id="schedule-list" class="list-page"></div><div class="data-mgmt"><div class="data-mgmt-title">BACKUP</div><button class="data-btn" onclick="exportData()">기록 내보내기</button><button class="data-btn" onclick="importData()">기록 가져오기</button></div></div>
+    <div id="lyrics-view" class="view-content"><div class="lyrics-page"><div class="lyrics-grid" id="lyrics-grid"></div></div></div>
+    <div class="footer"><a href="#" class="sub-title-link">@dragonponysuzip</a></div>
   </div>
-
   <div class="detail-page" id="detail-view">
     <button class="floating-back-btn" onclick="closeDetail()">◀</button>
-    <div class="hero-section">
-      <div id="view-image" class="d-image"></div>
-      <div class="hero-title-area">
-        <div class="d-date" id="view-date"></div>
-        <div class="d-title" id="view-title"></div>
-      </div>
-    </div>
-    <div class="ticket-section">
-      <div class="ticket-wrapper">
-        <div class="ticket-label">INFO</div>
-        <div id="view-text" style="white-space:pre-line; line-height:1.8;"></div>
-      </div>
-      <div id="add-to-cal-btn-area"></div>
-    </div>
+    <div id="view-image" style="width:100%; min-height:300px; background:#1a1a1a;"></div>
+    <div id="view-date" style="color:#cc0033; font-weight:900; padding:20px 20px 5px;"></div>
+    <div id="view-title" style="font-size:2rem; font-weight:900; padding:0 20px 20px;"></div>
+    <div id="view-text" style="padding:20px; line-height:1.8; color:#ddd;"></div>
   </div>
-
   <div class="lyrics-detail" id="lyrics-detail-view">
     <button class="floating-back-btn" onclick="closeLyrics()">◀</button>
     <div class="lyrics-title" id="l-title"></div>
     <div class="lyrics-content" id="l-content"></div>
   </div>
 </div>
-
 <script>
-  let currentYear = new Date().getFullYear();
-  let currentMonth = new Date().getMonth() + 1;
-  let scheduleData = [];
+  let currentYear = new Date().getFullYear(), currentMonth = new Date().getMonth() + 1;
+  let scheduleData = [], lyricsData = [];
   
-  const unreleasedLyrics = [
-    { title: "NOT OUT", content: "Baby please don't cry tonight\n우린 이제 시작이야\nWe're not crazy it's not enough\n이젠 더 미쳐야만 해\n\n거친 숨을 몰아쉬어\n세상 끝에 서있어도\n절대 멈추지 않을 우리\nNot Out, We are Not Out" },
-    { title: "NEVER", content: "난 널 절대 놓지 않아\nNever let you go\n차가운 빗속을 걸어도\n너와 나 함께라면\n\n부서진 조각들을 모아\n다시 빛을 만들게\n영원히 변치 않을 약속\nNever, I say Never" },
-    { title: "DENEB", content: "가장 먼 곳에서 빛나는 별\n데네브 그 이름을 불러\n멀리 떨어져 있어도\n내 맘은 너를 향해 달려가\n\n밤하늘의 지도 속에\n너라는 좌표를 새겨\n언제든 널 찾을 수 있게\n밝게 빛나줘 내 데네브" },
-    { title: "Morse Code", content: "점과 선으로 이어진 신호\n너에게만 들리는 말\n뚜뚜 뚜뚜 뚜뚜뚜\n비밀스럽게 전해지는 맘\n\n복잡한 세상 속에서\n우리만의 언어로\n누구도 알 수 없게\n사랑을 속삭여 Morse Code" }
-  ];
+  function getAttendance() { const s = localStorage.getItem('dp_attendance'); return s ? JSON.parse(s) : {}; }
+  function switchTab(t) { document.querySelectorAll('.tab-btn, .view-content').forEach(e => e.classList.remove('active')); document.getElementById('btn-'+t).classList.add('active'); document.getElementById(t+'-view').classList.add('active'); }
 
-  function switchTab(tab) {
-    document.querySelectorAll('.tab-btn, .view-content').forEach(el => el.classList.remove('active'));
-    document.getElementById('btn-' + tab).classList.add('active');
-    document.getElementById(tab + '-view').classList.add('active');
-    if(tab === 'calendar') renderCalendar(currentYear, currentMonth);
-    if(tab === 'list') renderList();
-    if(tab === 'lyrics') renderLyrics();
+  // [메시지 커스텀 적용]
+  function exportData() {
+    const d = localStorage.getItem('dp_attendance');
+    if(!d || d === '{}') return alert("내보낼 기록이 없세혁!");
+    navigator.clipboard.writeText(btoa(encodeURIComponent(d))).then(() => alert("체크 기록이 복사되었어요!\n메모장이나 카톡에 붙여넣어 보관하세혁♡,,♡"));
+  }
+  function importData() {
+    const c = prompt("복사해둔 백업 코드를 입력해주세혁:");
+    if(!c) return;
+    try { localStorage.setItem('dp_attendance', decodeURIComponent(atob(c))); alert("기록 복구 성공! 🎸"); location.reload(); }
+    catch(e) { alert("잘못된 코드인 것 같아요. 다시 확인해주세혁ㅠ..ㅠ!"); }
   }
 
-  async function fetchSchedules() {
-    const sheetId = '1UKMplA90Fz4x3ueJtjRSOGOK1bD1c74GkK-wo573dG4';
-    const url = 'https://docs.google.com/spreadsheets/d/' + sheetId + '/gviz/tq?tqx=out:json';
+  // [시트 연동 로직]
+  async function fetchData() {
+    const sheetSched = '1UKMplA90Fz4x3ueJtjRSOGOK1bD1c74GkK-wo573dG4';
+    const sheetLyrics = '1zfCSs8P8qEtDaWQlYFaCb7f1-roga3uyGLeWGDtUfME';
+    
+    // 스케줄 가져오기
     try {
-      const response = await fetch(url);
-      const text = await response.text();
-      const jsonStr = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
-      const data = JSON.parse(jsonStr);
-      scheduleData = [];
-      data.table.rows.forEach(row => {
-        if (!row.c || !row.c[0]) return;
-        const dateStr = row.c[0].v;
-        const titleStr = row.c[1] ? row.c[1].v : '';
-        const imgUrl = row.c[2] ? row.c[2].v : '';
-        const descStr = row.c[3] ? row.c[3].v : '';
-        const typeStr = (row.c.length > 4 && row.c[4]) ? row.c[4].v : '';
-        if(dateStr === '날짜') return;
-        scheduleData.push({ dateStr, titleStr, imgUrl, descStr, typeStr });
-      });
-      renderCalendar(currentYear, currentMonth);
-      renderList();
-    } catch (e) { console.error("Load Fail", e); }
-  }
+      const res = await fetch(`https://docs.google.com/spreadsheets/d/${sheetSched}/gviz/tq?tqx=out:json`);
+      const txt = await res.text();
+      const json = JSON.parse(txt.substring(txt.indexOf('{'), txt.lastIndexOf('}') + 1));
+      scheduleData = json.table.rows.filter(r => r.c[0] && r.c[0].v !== '날짜').map(r => ({
+        dateStr: r.c[0].v, titleStr: r.c[1]?.v || '', imgUrl: r.c[2]?.v || '', descStr: r.c[3]?.v || '', typeStr: r.c[4]?.v || ''
+      }));
+      renderCalendar(currentYear, currentMonth); renderList();
+    } catch(e) { console.error("Sched Fail", e); }
 
-  function renderList() {
-    const list = document.getElementById('schedule-list');
-    list.innerHTML = '';
-    scheduleData.forEach(item => {
-      const div = document.createElement('div');
-      div.className = 'schedule-item';
-      div.onclick = function() { openDetail(item.dateStr, item.titleStr, item.imgUrl, item.descStr); };
-      div.innerHTML = '<div class="date">' + item.dateStr + '</div><div class="category-badge">' + (item.typeStr || 'ETC') + '</div><div class="title">' + item.titleStr + '</div>';
-      list.appendChild(div);
-    });
-  }
-
-  function isDateInRange(m, d, str) {
-    const p = str.split('-');
-    if(p.length === 1) { 
-      const parts = p[0].split('/');
-      return parseInt(parts[0]) === m && parseInt(parts[1]) === d; 
-    }
-    const sParts = p[0].split('/');
-    const startM = parseInt(sParts[0]), startD = parseInt(sParts[1]);
-    let eParts = p[1].split('/');
-    let endM, endD;
-    if(eParts.length === 1) { endM = startM; endD = parseInt(eParts[0]); }
-    else { endM = parseInt(eParts[0]); endD = parseInt(eParts[1]); }
-    const start = new Date(currentYear, startM-1, startD).getTime();
-    const end = new Date(currentYear, endM-1, endD).getTime();
-    const target = new Date(currentYear, m-1, d).getTime();
-    return target >= start && target <= end;
-  }
-
-  function renderCalendar(y, m) {
-    const grid = document.getElementById('cal-grid');
-    document.getElementById('cal-title').innerText = y + '년 ' + m + '월';
-    grid.innerHTML = '';
-    ['일','월','화','수','목','금','토'].forEach(d => {
-      grid.innerHTML += '<div style="font-size:0.8rem; color:#666; margin-bottom:5px;">' + d + '</div>';
-    });
-    const first = new Date(y, m-1, 1).getDay();
-    const last = new Date(y, m, 0).getDate();
-    const today = new Date(); today.setHours(0,0,0,0);
-    for(let i=0; i<first; i++) grid.innerHTML += '<div></div>';
-    for(let d=1; d<=last; d++) {
-      const cell = new Date(y, m-1, d);
-      const isToday = cell.getTime() === today.getTime();
-      const events = scheduleData.filter(function(ev) { return isDateInRange(m, d, ev.dateStr); });
-      const dayEl = document.createElement('div');
-      dayEl.className = 'cal-day' + (isToday ? ' today' : '');
-      let evHtml = '';
-      events.forEach(function(ev) {
-        evHtml += '<div class="cal-event" style="background:' + (cell < today ? '#333' : '#cc0033') + '" onclick="event.stopPropagation(); openDetail(\'' + ev.dateStr + '\',\'' + ev.titleStr + '\',\'' + ev.imgUrl + '\',\'' + ev.descStr + '\')">' + ev.titleStr + '</div>';
-      });
-      dayEl.innerHTML = '<span>' + d + '</span>' + evHtml;
-      grid.appendChild(dayEl);
-    }
+    // 가사 가져오기 (지은 누님이 새로 주신 시트!)
+    try {
+      const res = await fetch(`https://docs.google.com/spreadsheets/d/${sheetLyrics}/gviz/tq?tqx=out:json`);
+      const txt = await res.text();
+      const json = JSON.parse(txt.substring(txt.indexOf('{'), txt.lastIndexOf('}') + 1));
+      lyricsData = json.table.rows.filter(r => r.c[0] && r.c[0].v !== '곡제목').map(r => ({
+        title: r.c[0].v, content: r.c[1]?.v || ''
+      }));
+      renderLyrics();
+    } catch(e) { console.error("Lyrics Fail", e); }
   }
 
   function renderLyrics() {
-    const grid = document.getElementById('lyrics-grid');
-    grid.innerHTML = '';
-    unreleasedLyrics.forEach(function(s) {
-      const div = document.createElement('div');
-      div.className = 'lyrics-item';
-      div.innerText = s.title;
-      div.onclick = function() { 
+    const g = document.getElementById('lyrics-grid'); g.innerHTML = '';
+    lyricsData.forEach(s => {
+      const d = document.createElement('div'); d.className = 'lyrics-item'; d.innerText = s.title;
+      d.onclick = () => { 
         document.getElementById('l-title').innerText = s.title; 
-        document.getElementById('l-content').innerText = s.content; 
-        document.getElementById('lyrics-detail-view').style.display = 'block'; 
-        document.getElementById('main-view').style.display='none'; 
+        document.getElementById('l-content').innerText = s.content;
+        document.getElementById('lyrics-detail-view').style.display = 'block';
+        document.getElementById('main-view').style.display = 'none';
       };
-      grid.appendChild(div);
+      g.appendChild(d);
     });
   }
 
-  function prevMonth() { currentMonth--; if(currentMonth < 1) { currentMonth = 12; currentYear--; } renderCalendar(currentYear, currentMonth); }
-  function nextMonth() { currentMonth++; if(currentMonth > 12) { currentMonth = 1; currentYear++; } renderCalendar(currentYear, currentMonth); }
+  // [스케줄 리스트/달력 렌더링 - v2.6 로직 유지]
+  function renderList() {
+    const list = document.getElementById('schedule-list'); list.innerHTML = '';
+    const att = getAttendance(); const today = new Date(); today.setHours(0,0,0,0);
+    const upWrap = document.createElement('div'), pastDet = document.createElement('details');
+    pastDet.className = 'past-schedules'; pastDet.innerHTML = '<summary>▼ 지나간 스케줄 보기</summary>';
+    const pastWrap = document.createElement('div'); pastDet.appendChild(pastWrap);
 
-  function openDetail(date, title, img, txt) {
-    document.getElementById('main-view').style.display = 'none';
-    document.getElementById('detail-view').style.display = 'block';
-    document.getElementById('view-date').innerText = date;
-    document.getElementById('view-title').innerText = title;
-    document.getElementById('view-image').innerHTML = img ? '<img src="' + img + '">' : '<div style="height:350px; background:#222;"></div>';
-    document.getElementById('view-text').innerText = txt;
-    const startPart = date.split('-')[0];
-    const m = startPart.split('/')[0].padStart(2, '0');
-    const d = startPart.split('/')[1].padStart(2, '0');
-    const ics = 'BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nDTSTART:' + currentYear + m + d + 'T090000Z\nSUMMARY:[DP] ' + title + '\nEND:VEVENT\nEND:VCALENDAR';
-    const url = URL.createObjectURL(new Blob([ics], {type:'text/calendar'}));
-    document.getElementById('add-to-cal-btn-area').innerHTML = '<a href="' + url + '" download="dp.ics" class="add-cal-btn">🗓️ 캘린더 추가</a>';
+    scheduleData.forEach(item => {
+      const p = item.dateStr.split('-')[0].split('/');
+      const itemD = new Date(currentYear, p[0]-1, p[1]);
+      const div = document.createElement('div'); div.className = 'schedule-item';
+      div.onclick = () => openDetail(item.dateStr, item.titleStr, item.imgUrl, item.descStr);
+      div.innerHTML = `<div class="date">${item.dateStr}</div><div class="category-badge">${item.typeStr || 'ETC'}</div><div class="title">${item.titleStr}</div>`;
+      const btn = document.createElement('div'); btn.className = 'check-btn ' + (att[item.titleStr] ? 'checked' : '');
+      btn.onclick = (e) => { e.stopPropagation(); att[item.titleStr] = !att[item.titleStr]; localStorage.setItem('dp_attendance', JSON.stringify(att)); renderList(); };
+      div.appendChild(btn);
+      if(itemD >= today) upWrap.appendChild(div); else pastWrap.appendChild(div);
+    });
+    list.appendChild(upWrap); if(pastWrap.children.length > 0) list.appendChild(pastDet);
   }
 
-  function closeDetail() { document.getElementById('detail-view').style.display = 'none'; document.getElementById('main-view').style.display = 'flex'; }
-  function closeLyrics() { document.getElementById('lyrics-detail-view').style.display = 'none'; document.getElementById('main-view').style.display = 'flex'; }
+  function renderCalendar(y, m) {
+    const g = document.getElementById('cal-grid'); g.innerHTML = '';
+    document.getElementById('cal-title').innerText = `${y}년 ${m}월`;
+    const last = new Date(y, m, 0).getDate(), first = new Date(y, m-1, 1).getDay();
+    const today = new Date(); today.setHours(0,0,0,0);
+    for(let i=0; i<first; i++) g.innerHTML += '<div></div>';
+    for(let d=1; d<=last; d++) {
+      const cell = new Date(y, m-1, d);
+      const evs = scheduleData.filter(ev => {
+        const p = ev.dateStr.split('-');
+        const s = p[0].split('/'); if(parseInt(s[0])===m && parseInt(s[1])===d) return true;
+        if(p[1]) {
+          const e = p[1].split('/');
+          const start = new Date(y, s[0]-1, s[1]).getTime(), end = e.length===1 ? new Date(y, s[0]-1, e[0]).getTime() : new Date(y, e[0]-1, e[1]).getTime();
+          return cell.getTime() >= start && cell.getTime() <= end;
+        }
+        return false;
+      });
+      const dayEl = document.createElement('div'); dayEl.className = 'cal-day' + (cell.getTime()===today.getTime()?' today':'');
+      let evHtml = ''; evs.forEach(ev => evHtml += `<div class="cal-event" style="background:${cell < today ? '#333' : '#cc0033'}" onclick="event.stopPropagation(); openDetail('${ev.dateStr}','${ev.titleStr}','${ev.imgUrl}','${ev.descStr}')">${ev.titleStr}</div>`);
+      dayEl.innerHTML = `<span>${d}</span>` + evHtml; g.appendChild(dayEl);
+    }
+  }
 
-  window.onload = function() { fetchSchedules(); renderLyrics(); };
+  function prevMonth() { currentMonth--; if(currentMonth < 1) { currentMonth=12; currentYear--; } renderCalendar(currentYear, currentMonth); }
+  function nextMonth() { currentMonth++; if(currentMonth > 12) { currentMonth=1; currentYear++; } renderCalendar(currentYear, currentMonth); }
+  function openDetail(d, t, i, x) { document.getElementById('main-view').style.display='none'; document.getElementById('detail-view').style.display='block'; document.getElementById('view-date').innerText=d; document.getElementById('view-title').innerText=t; document.getElementById('view-image').innerHTML=i?`<img src="${i}" style="width:100%">`:''; document.getElementById('view-text').innerText=x; }
+  function closeDetail() { document.getElementById('detail-view').style.display='none'; document.getElementById('main-view').style.display='flex'; }
+  function closeLyrics() { document.getElementById('lyrics-detail-view').style.display='none'; document.getElementById('main-view').style.display='flex'; }
+
+  window.onload = fetchData;
 </script>
-
 </body>
 </html>
