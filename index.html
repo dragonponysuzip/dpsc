@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>DragonPony Schedule v5.5 (Emoji Edition)</title>
+<title>DragonPony Schedule v5.6 (Notion Checklist Premium)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
@@ -19,14 +19,12 @@
 
   /* [제일 상단 타이틀 구역 화이트 여백] */
   .header { background: #ffffff; color: #222222; padding: 60px 20px 55px; text-align: center; border-bottom: none; flex-shrink: 0; }
-  /* 💥 이모지 전용 폰트 사이즈 및 가독성 밸런스 핏 조정쇼!! */
   .main-title { font-size: 1.6rem; letter-spacing: 4px; line-height: 1; display: block; }
   .sub-title-link { display: block; font-size: 0.7rem; color: #aaaaaa; text-decoration: none; margin-top: 12px; letter-spacing: 0.5px; }
   
-  /* 버튼 간격을 일정하게 유지하되 회색 상자만 핏하게 만들기 위해 flex-basis 설정 */
   .tab-wrap { display: flex; border-bottom: none; flex-shrink: 0; background: #ffffff; padding: 0 20px; }
   
-  /* [회색 박스 가로폭 슬림 핏 및 볼드 해제 프로토콜] */
+  /* [회색 박스 가로폭 슬림 핏 프로토콜] */
   .tab-btn { flex: 1; padding: 3px 0; border: none; background: none; font-size: 0.85rem; font-weight: 500; color: #222222; cursor: pointer; transition: all 0.1s ease; border-radius: 0px; text-align: center; line-height: 1.2; display: flex; align-items: center; justify-content: center; }
   .tab-btn span { padding: 3px 12px; display: inline-block; transition: all 0.1s ease; }
   .tab-btn.active span { background: #8e8e8e; color: #ffffff; }
@@ -46,19 +44,23 @@
   .cal-event-list { flex-grow: 1; display: flex; flex-direction: column; justify-content: flex-end; width: 100%; gap: 2px; margin-top: 3px; overflow: hidden; }
   .cal-event { color: #222222; font-size: 0.55rem; padding: 1px 3px; border-radius: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; box-sizing: border-box; text-align: center; font-weight: 500; pointer-events: none; }
 
-  /* [목록 페이지] */
-  .list-page { padding: 25px 20px 5px; }
-  .schedule-item { display: flex; align-items: center; padding: 16px 0; border-bottom: 1px solid #eaeaea; cursor: pointer; }
-  .date { font-weight: bold; color: #222222; width: 50px; font-size: 0.95rem; flex-shrink: 0; }
-  .category-badge { padding: 2px 5px; margin-right: 12px; font-size: 0.6rem; font-weight: bold; color: #666666; border: 1px solid #dddddd; border-radius: 3px; white-space: nowrap; flex-shrink: 0; background: #f1f1f1; }
-  .category-badge.active { background: #222222; color: #ffffff; border-color: #222222; }
-  .title { font-size: 0.95rem; flex-grow: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #333333; padding-right: 12px; }
+  /* 💥 [수정 1, 2] 리스트 상단 마진 대폭 벌리고, 좌우 패딩을 20px -> 35px로 조여서 리스트 컴포넌트들을 슬림하게 축소!! (여백 미학 수호) */
+  .list-page { padding: 40px 35px 5px; }
   
-  /* 체크박스 */
+  /* 💥 리스트 아이템 내부 세로 폭도 미세하게 압축 보정 */
+  .schedule-item { display: flex; align-items: center; padding: 14px 0; border-bottom: 1px solid #eaeaea; cursor: pointer; }
+  
+  /* 💥 [수정 2] 날짜, 라벨, 제목 폰트 사이즈를 균일하게 축소해서 노션 감성 최적화쇼!! */
+  .date { font-weight: bold; color: #222222; width: 45px; font-size: 0.85rem; flex-shrink: 0; letter-spacing: -0.3px; }
+  .category-badge { padding: 2px 4px; margin-right: 10px; font-size: 0.55rem; font-weight: bold; color: #666666; border: 1px solid #dddddd; border-radius: 3px; white-space: nowrap; flex-shrink: 0; background: #f1f1f1; letter-spacing: -0.2px; }
+  .category-badge.active { background: #222222; color: #ffffff; border-color: #222222; }
+  .title { font-size: 0.85rem; flex-grow: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #333333; padding-right: 10px; }
+  
+  /* 💥 [수정 2] 체크박스 크기도 리스트 축소 스케일에 맞춰 20px -> 16px로 슬림하게 압축쇼!! */
   .check-btn { 
-    width: 20px; height: 20px; border: 1.5px solid #cccccc; border-radius: 4px; 
+    width: 16px; height: 16px; border: 1.5px solid #cccccc; border-radius: 3px; 
     flex-shrink: 0; display: flex; align-items: center; justify-content: center; 
-    font-size: 10px; color: transparent; cursor: pointer; margin-left: auto;
+    font-size: 9px; color: transparent; cursor: pointer; margin-left: auto;
     background: transparent; z-index: 10;
   }
   .check-btn.checked { background: #222222; border-color: #222222; color: #ffffff; }
@@ -95,13 +97,13 @@
     <div class="header"><span class="main-title">🐲🐎🐎🐴</span><a href="https://www.instagram.com/dragonpony_/" target="_blank" class="sub-title-link">@dragonpony_</a></div>
     
     <div class="tab-wrap">
-      <button class="tab-btn active" onclick="switchTab('calendar')" id="btn-calendar"><span>monthly</span></button>
-      <button class="tab-btn" onclick="switchTab('list')" id="btn-list"><span>check list</span></button>
+      <button class="tab-btn" onclick="switchTab('calendar')" id="btn-calendar"><span>monthly</span></button>
+      <button class="tab-btn active" onclick="switchTab('list')" id="btn-list"><span>check list</span></button>
       <button class="tab-btn" onclick="switchTab('lyrics')" id="btn-lyrics"><span>etc.</span></button>
     </div>
     
-    <div id="calendar-view" class="view-content active"><div class="cal-header-wrap"><button class="cal-nav-btn" onclick="prevMonth()">◀</button><span id="cal-title"></span><button class="cal-nav-btn" onclick="nextMonth()">▶</button></div><div class="cal-grid" id="cal-grid"></div></div>
-    <div id="list-view" class="view-content"><div id="schedule-list" class="list-page"></div><div class="data-mgmt"><div class="data-mgmt-title">CHECK DATA BACKUP</div><div class="data-btn-row"><button class="data-btn" onclick="exportData()">기록 내보내기</button><button class="data-btn" onclick="importData()">기록 가져오기</button></div></div></div>
+    <div id="calendar-view" class="view-content"><div class="cal-header-wrap"><button class="cal-nav-btn" onclick="prevMonth()">◀</button><span id="cal-title"></span><button class="cal-nav-btn" onclick="nextMonth()">▶</button></div><div class="cal-grid" id="cal-grid"></div></div>
+    <div id="list-view" class="view-content active"><div id="schedule-list" class="list-page"></div><div class="data-mgmt"><div class="data-mgmt-title">CHECK DATA BACKUP</div><div class="data-btn-row"><button class="data-btn" onclick="exportData()">기록 내보내기</button><button class="data-btn" onclick="importData()">기록 가져오기</button></div></div></div>
     <div id="lyrics-view" class="view-content"><div class="lyrics-grid" id="lyrics-grid"></div></div>
     <div class="footer"><a href="#" style="color:#bbbbbb; font-size:0.75rem; text-decoration:none;">@dragonponysuzip</a></div>
   </div>
