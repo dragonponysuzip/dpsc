@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>DragonPony Schedule v5.4 (Notion Pixel Perfect)</title>
+<title>DragonPony Schedule v5.5 (Emoji Edition)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
@@ -19,17 +19,15 @@
 
   /* [제일 상단 타이틀 구역 화이트 여백] */
   .header { background: #ffffff; color: #222222; padding: 60px 20px 55px; text-align: center; border-bottom: none; flex-shrink: 0; }
-  .main-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 2px; color: #222222; line-height: 1; display: block; }
-  .sub-title-link { display: block; font-size: 0.7rem; color: #aaaaaa; text-decoration: none; margin-top: 8px; letter-spacing: 0.5px; }
+  /* 💥 이모지 전용 폰트 사이즈 및 가독성 밸런스 핏 조정쇼!! */
+  .main-title { font-size: 1.6rem; letter-spacing: 4px; line-height: 1; display: block; }
+  .sub-title-link { display: block; font-size: 0.7rem; color: #aaaaaa; text-decoration: none; margin-top: 12px; letter-spacing: 0.5px; }
   
-  /* 💥 버튼 간격을 일정하게 유지하되 회색 상자만 핏하게 만들기 위해 flex-basis 설정쇼!! */
+  /* 버튼 간격을 일정하게 유지하되 회색 상자만 핏하게 만들기 위해 flex-basis 설정 */
   .tab-wrap { display: flex; border-bottom: none; flex-shrink: 0; background: #ffffff; padding: 0 20px; }
   
-  /* 💥 [대수정] padding을 가로세로 딱 글자 스케일에 핏하게 조여서 회색 박스 가로 사이즈 대폭 단축 완료쇼!! */
-  /* 💥 [대수정] font-weight를 500 균일로 고정하고 active 시 볼드 처리 전량 소각 딜리트 완료쇼!! */
+  /* [회색 박스 가로폭 슬림 핏 및 볼드 해제 프로토콜] */
   .tab-btn { flex: 1; padding: 3px 0; border: none; background: none; font-size: 0.85rem; font-weight: 500; color: #222222; cursor: pointer; transition: all 0.1s ease; border-radius: 0px; text-align: center; line-height: 1.2; display: flex; align-items: center; justify-content: center; }
-  
-  /* 💥 display: inline-block 처리로 버튼 전체 영역이 아닌 글자 가로 사이즈에 딱 맞춘 회색 박스 노션핏 완성쇼!! */
   .tab-btn span { padding: 3px 12px; display: inline-block; transition: all 0.1s ease; }
   .tab-btn.active span { background: #8e8e8e; color: #ffffff; }
 
@@ -94,7 +92,7 @@
 <body>
 <div class="app-wrap">
   <div id="main-view" style="display: flex; flex-direction: column; height: 100%;">
-    <div class="header"><span class="main-title">DRAGON PONY SCHEDULE</span><a href="https://www.instagram.com/dragonpony_/" target="_blank" class="sub-title-link">@dragonpony_</a></div>
+    <div class="header"><span class="main-title">🐲🐎🐎🐴</span><a href="https://www.instagram.com/dragonpony_/" target="_blank" class="sub-title-link">@dragonpony_</a></div>
     
     <div class="tab-wrap">
       <button class="tab-btn active" onclick="switchTab('calendar')" id="btn-calendar"><span>monthly</span></button>
