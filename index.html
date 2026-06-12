@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>DragonPony Schedule v5.2 (Notion Premium Edition)</title>
+<title>DragonPony Schedule v5.3 (Notion Custom Edition)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
@@ -17,19 +17,18 @@
   .view-content { flex-grow: 1; height: 0; overflow-y: auto; display: none; background: #ffffff; padding-bottom: 120px; }
   .view-content.active { display: block; }
 
-  /* 💥 [수정 1] 제일 상단 타이틀 구역 화이트 여백 대폭 확장쇼!! (이미지 시안 반영) */
-  .header { background: #ffffff; color: #222222; padding: 60px 20px 40px; text-align: center; border-bottom: none; flex-shrink: 0; }
+  /* 💥 [수정 1] 하단 패딩을 40px -> 55px로 상향 조정해서 빨간 선 영역의 여백을 아주 살짝만 더 넓게 확장쇼!! */
+  .header { background: #ffffff; color: #222222; padding: 60px 20px 55px; text-align: center; border-bottom: none; flex-shrink: 0; }
   .main-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 2px; color: #222222; line-height: 1; display: block; }
   .sub-title-link { display: block; font-size: 0.7rem; color: #aaaaaa; text-decoration: none; margin-top: 8px; letter-spacing: 0.5px; }
   
-  /* 💥 [수정 2] 탭 메뉴 랩 보더 제거 및 패딩 밸런스 조정 */
   .tab-wrap { display: flex; border-bottom: none; flex-shrink: 0; background: #ffffff; padding: 0 20px; gap: 5px; }
   
-  /* 💥 [수정 3] 탭 클릭 시 회색 박스 블록 + 화이트 글씨 반전 노션 스타일 치트키 도킹!! */
-  .tab-btn { flex: 1; padding: 6px 0; border: none; background: none; font-size: 0.85rem; font-weight: 500; color: #222222; cursor: pointer; transition: all 0.15s ease; border-radius: 4px; text-align: center; }
+  /* 💥 [수정 2] 세로 패딩 압축(6px->3px)으로 글자에 세로폭 딱 맞추고, border-radius 소각하여 완전 엣지 사각화 완료쇼!! */
+  .tab-btn { flex: 1; padding: 3px 0; border: none; background: none; font-size: 0.85rem; font-weight: 500; color: #222222; cursor: pointer; transition: all 0.1s ease; border-radius: 0px; text-align: center; line-height: 1.2; }
   .tab-btn.active { background: #8e8e8e; color: #ffffff; font-weight: 600; }
 
-  /* 💥 [수정 2-2] monthly 메뉴들과 밑에 월간 캘린더 사이 상단 간격 시안처럼 넓게 확보쇼!! */
+  /* [monthly 메뉴들과 밑에 월간 캘린더 사이 상단 간격] */
   .cal-header-wrap { display: flex; justify-content: space-between; align-items: center; padding: 40px 25px 20px; flex-shrink: 0; }
   .cal-nav-btn { background: none; border: none; color: #cccccc; font-size: 1.0rem; cursor: pointer; padding: 8px; }
   #cal-title { font-size: 1.15rem; font-weight: 700; color: #222222; }
@@ -44,7 +43,7 @@
   .cal-event-list { flex-grow: 1; display: flex; flex-direction: column; justify-content: flex-end; width: 100%; gap: 2px; margin-top: 3px; overflow: hidden; }
   .cal-event { color: #222222; font-size: 0.55rem; padding: 1px 3px; border-radius: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; box-sizing: border-box; text-align: center; font-weight: 500; pointer-events: none; }
 
-  /* [목록 페이지 - 간격 최적화] */
+  /* [목록 페이지] */
   .list-page { padding: 25px 20px 5px; }
   .schedule-item { display: flex; align-items: center; padding: 16px 0; border-bottom: 1px solid #eaeaea; cursor: pointer; }
   .date { font-weight: bold; color: #222222; width: 50px; font-size: 0.95rem; flex-shrink: 0; }
