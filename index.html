@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>DragonPony Schedule v5.3 (Notion Custom Edition)</title>
+<title>DragonPony Schedule v5.4 (Notion Pixel Perfect)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
@@ -17,16 +17,21 @@
   .view-content { flex-grow: 1; height: 0; overflow-y: auto; display: none; background: #ffffff; padding-bottom: 120px; }
   .view-content.active { display: block; }
 
-  /* 💥 [수정 1] 하단 패딩을 40px -> 55px로 상향 조정해서 빨간 선 영역의 여백을 아주 살짝만 더 넓게 확장쇼!! */
+  /* [제일 상단 타이틀 구역 화이트 여백] */
   .header { background: #ffffff; color: #222222; padding: 60px 20px 55px; text-align: center; border-bottom: none; flex-shrink: 0; }
   .main-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 2px; color: #222222; line-height: 1; display: block; }
   .sub-title-link { display: block; font-size: 0.7rem; color: #aaaaaa; text-decoration: none; margin-top: 8px; letter-spacing: 0.5px; }
   
-  .tab-wrap { display: flex; border-bottom: none; flex-shrink: 0; background: #ffffff; padding: 0 20px; gap: 5px; }
+  /* 💥 버튼 간격을 일정하게 유지하되 회색 상자만 핏하게 만들기 위해 flex-basis 설정쇼!! */
+  .tab-wrap { display: flex; border-bottom: none; flex-shrink: 0; background: #ffffff; padding: 0 20px; }
   
-  /* 💥 [수정 2] 세로 패딩 압축(6px->3px)으로 글자에 세로폭 딱 맞추고, border-radius 소각하여 완전 엣지 사각화 완료쇼!! */
-  .tab-btn { flex: 1; padding: 3px 0; border: none; background: none; font-size: 0.85rem; font-weight: 500; color: #222222; cursor: pointer; transition: all 0.1s ease; border-radius: 0px; text-align: center; line-height: 1.2; }
-  .tab-btn.active { background: #8e8e8e; color: #ffffff; font-weight: 600; }
+  /* 💥 [대수정] padding을 가로세로 딱 글자 스케일에 핏하게 조여서 회색 박스 가로 사이즈 대폭 단축 완료쇼!! */
+  /* 💥 [대수정] font-weight를 500 균일로 고정하고 active 시 볼드 처리 전량 소각 딜리트 완료쇼!! */
+  .tab-btn { flex: 1; padding: 3px 0; border: none; background: none; font-size: 0.85rem; font-weight: 500; color: #222222; cursor: pointer; transition: all 0.1s ease; border-radius: 0px; text-align: center; line-height: 1.2; display: flex; align-items: center; justify-content: center; }
+  
+  /* 💥 display: inline-block 처리로 버튼 전체 영역이 아닌 글자 가로 사이즈에 딱 맞춘 회색 박스 노션핏 완성쇼!! */
+  .tab-btn span { padding: 3px 12px; display: inline-block; transition: all 0.1s ease; }
+  .tab-btn.active span { background: #8e8e8e; color: #ffffff; }
 
   /* [monthly 메뉴들과 밑에 월간 캘린더 사이 상단 간격] */
   .cal-header-wrap { display: flex; justify-content: space-between; align-items: center; padding: 40px 25px 20px; flex-shrink: 0; }
@@ -35,7 +40,7 @@
   .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; padding: 0 15px 15px; flex-shrink: 0; }
   .cal-day-name { font-size: 0.65rem; color: #999999; text-align: center; margin-bottom: 8px; font-weight: bold; }
   
-  /* [달력 디자인 - 클릭 수호 프로토콜] */
+  /* [달력 디자인] */
   .cal-day { aspect-ratio: 1 / 1.5; border: 1px solid #eaeaea; border-radius: 6px; padding: 6px 2px; font-size: 0.8rem; position: relative; display: flex; flex-direction: column; align-items: center; overflow: hidden; background: #ffffff; cursor: pointer; }
   .cal-day.today { border: 1.5px solid #222222; background: #fafafa; }
   .day-num { font-size: 0.85rem; color: #222222; font-weight: 600; display: block; line-height: 1.1; margin-top: 1px; }
@@ -92,9 +97,9 @@
     <div class="header"><span class="main-title">DRAGON PONY SCHEDULE</span><a href="https://www.instagram.com/dragonpony_/" target="_blank" class="sub-title-link">@dragonpony_</a></div>
     
     <div class="tab-wrap">
-      <button class="tab-btn active" onclick="switchTab('calendar')" id="btn-calendar">monthly</button>
-      <button class="tab-btn" onclick="switchTab('list')" id="btn-list">check list</button>
-      <button class="tab-btn" onclick="switchTab('lyrics')" id="btn-lyrics">etc.</button>
+      <button class="tab-btn active" onclick="switchTab('calendar')" id="btn-calendar"><span>monthly</span></button>
+      <button class="tab-btn" onclick="switchTab('list')" id="btn-list"><span>check list</span></button>
+      <button class="tab-btn" onclick="switchTab('lyrics')" id="btn-lyrics"><span>etc.</span></button>
     </div>
     
     <div id="calendar-view" class="view-content active"><div class="cal-header-wrap"><button class="cal-nav-btn" onclick="prevMonth()">◀</button><span id="cal-title"></span><button class="cal-nav-btn" onclick="nextMonth()">▶</button></div><div class="cal-grid" id="cal-grid"></div></div>
