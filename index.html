@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>DragonPony Schedule v5.8 (State Retention Edition)</title>
+<title>DragonPony Schedule v5.9 (Premium Accordion Edition)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
@@ -64,11 +64,34 @@
   .check-btn.checked { background: #222222; border-color: #222222; color: #ffffff; }
   .check-btn.checked::after { content: '✓'; display: block; margin-top: -1px; }
 
-  /* [가사 탭 & 데이터 관리] */
-  .lyrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 35px 15px 15px; }
-  .lyrics-item { background: #ffffff; border: 1px solid #eaeaea; padding: 22px 8px; border-radius: 8px; text-align: center; font-size: 0.85rem; font-weight: 600; color: #333333; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
-  .lyrics-item:hover { background: #fafafa; }
-  .data-mgmt { margin: 30px 0 80px; padding: 20px 15px; border: 1px solid #eaeaea; border-radius: 8px; background: #fafafa; text-align: center; }
+  /* 💥 [etc 탭 대개조 구역] 시안 맞춤형 폰트 및 구조 패딩 마진 셋업 */
+  .etc-page { padding: 40px 35px 5px; }
+  .section-title { font-size: 0.9rem; font-weight: bold; color: #222222; margin-bottom: 12px; letter-spacing: -0.3px; }
+  
+  /* 시안의 부드러운 연회색 메인 박스 컨테이너 */
+  .etc-box-container { background: #fafafa; border: 1px solid #eaeaea; border-radius: 8px; padding: 20px 18px; margin-bottom: 40px; }
+  
+  /* 💥 [미발매곡 가사 버튼] 가로 나열 플렉스 컨테이너 */
+  .lyrics-btn-flex { display: flex; flex-wrap: wrap; gap: 10px; }
+  .lyrics-btn-item { background: #ffffff; border: 1px solid #e0e0e0; border-radius: 6px; padding: 10px 16px; font-size: 0.8rem; font-weight: 500; color: #333333; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.02); transition: all 0.1s ease; }
+  .lyrics-btn-item:hover { background: #f5f5f5; border-color: #cccccc; }
+
+  /* 💥 [etc.. 아코디언] 컴포넌트 스타일 셋업 */
+  .accordion-wrapper { display: flex; flex-direction: column; gap: 12px; }
+  .accordion-item { border-bottom: 1px solid #eaeaea; padding-bottom: 12px; }
+  .accordion-item:last-child { border-bottom: none; padding-bottom: 0; }
+  
+  /* 아코디언 헤더 (질문 버튼 구역) */
+  .accordion-header { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: 500; color: #333333; cursor: pointer; padding: 4px 2px; }
+  .accordion-icon { font-size: 0.65rem; color: #aaaaaa; transition: transform 0.2s ease; }
+  .accordion-item.active .accordion-icon { transform: rotate(180deg); color: #222222; }
+  
+  /* 아코디언 본문 (답변 내용 구역 - 노션 감성) */
+  .accordion-content { display: none; font-size: 0.8rem; color: #666666; line-height: 1.7; padding: 10px 4px 4px; white-space: pre-line; }
+  .accordion-item.active .accordion-content { display: block; }
+
+  /* 데이터 백업 관리 구역 마진 조정 */
+  .data-mgmt { margin: 10px 0 80px; padding: 20px 15px; border: 1px solid #eaeaea; border-radius: 8px; background: #fafafa; text-align: center; }
   .data-mgmt-title { font-size: 0.75rem; color: #666666; margin-bottom: 12px; font-weight: bold; letter-spacing: 0.5px; }
   .data-btn-row { display: flex; gap: 8px; }
   .data-btn { flex: 1; padding: 10px; background: #ffffff; border: 1px solid #dddddd; color: #555555; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: bold; }
@@ -102,7 +125,21 @@
     
     <div id="calendar-view" class="view-content"><div class="cal-header-wrap"><button class="cal-nav-btn" onclick="prevMonth()">◀</button><span id="cal-title"></span><button class="cal-nav-btn" onclick="nextMonth()">▶</button></div><div class="cal-grid" id="cal-grid"></div></div>
     <div id="list-view" class="view-content"><div id="schedule-list" class="list-page"></div><div class="data-mgmt"><div class="data-mgmt-title">CHECK DATA BACKUP</div><div class="data-btn-row"><button class="data-btn" onclick="exportData()">기록 내보내기</button><button class="data-btn" onclick="importData()">기록 가져오기</button></div></div></div>
-    <div id="lyrics-view" class="view-content"><div class="lyrics-grid" id="lyrics-grid"></div></div>
+    
+    <div id="lyrics-view" class="view-content">
+      <div class="etc-page">
+        <div class="section-title">*미발매곡 가사</div>
+        <div class="etc-box-container">
+          <div class="lyrics-btn-flex" id="lyrics-btn-area"></div>
+        </div>
+        
+        <div class="section-title">*etc..</div>
+        <div class="etc-box-container">
+          <div class="accordion-wrapper" id="etc-accordion-area"></div>
+        </div>
+      </div>
+    </div>
+    
     <div class="footer"><a href="#" style="color:#bbbbbb; font-size:0.75rem; text-decoration:none;">@dragonponysuzip</a></div>
   </div>
 
@@ -125,12 +162,11 @@
 
 <script>
   let currentYear = new Date().getFullYear(), currentMonth = new Date().getMonth() + 1;
-  let scheduleData = [], lyricsData = [], currentFilter = '';
+  let scheduleData = [], lyricsData = [], etcData = [], currentFilter = '';
   const typeColors = { '방송': '#edf2fc', '공연': '#fdf2e9', '기타': '#f3f0fa', '콘텐츠': '#e8f8f5' }; 
   
   function getAttendance() { const s = localStorage.getItem('dp_attendance'); return s ? JSON.parse(s) : {}; }
   
-  /* 💥 [수정 2] switchTab 가동 시 sessionStorage에 누님이 마지막에 누른 탭 문자열 코드를 세이브 완료쇼!! */
   function switchTab(t) { 
     document.querySelectorAll('.tab-btn, .view-content').forEach(e => e.classList.remove('active')); 
     document.getElementById('btn-'+t).classList.add('active'); 
@@ -139,16 +175,28 @@
   }
 
   async function fetchData() {
-    const sId = '1UKMplA90Fz4x3ueJtjRSOGOK1bD1c74GkK-wo573dG4', lId = '1zfCSs8P8qEtDaWQlYFaCb7f1-roga3uyGLeWGDtUfME';
+    /* 💥 누님이 새로 빌드업해오신 구글 스프레드시트 각 ID 매핑 링크 연동 완료!! */
+    const sId = '1UKMplA90Fz4x3ueJtjRSOGOK1bD1c74GkK-wo573dG4';
+    const lId = '1zfCSs8P8qEtDaWQlYFaCb7f1-roga3uyGLeWGDtUfME';
+    const eId = '1XMpkY9Ym-EDLCRG-CkfXeqA-w35ThJoRhBmgCejsrCs';
+    
     try {
-      const [resS, resL] = await Promise.all([fetch(`https://docs.google.com/spreadsheets/d/${sId}/gviz/tq?tqx=out:json`), fetch(`https://docs.google.com/spreadsheets/d/${lId}/gviz/tq?tqx=out:json`)]);
-      const [txtS, txtL] = await Promise.all([resS.text(), resL.text()]);
+      const [resS, resL, resE] = await Promise.all([
+        fetch(`https://docs.google.com/spreadsheets/d/${sId}/gviz/tq?tqx=out:json`), 
+        fetch(`https://docs.google.com/spreadsheets/d/${lId}/gviz/tq?tqx=out:json`),
+        fetch(`https://docs.google.com/spreadsheets/d/${eId}/gviz/tq?tqx=out:json`)
+      ]);
+      const [txtS, txtL, txtE] = await Promise.all([resS.text(), resL.text(), resE.text()]);
+      
       scheduleData = JSON.parse(txtS.substring(txtS.indexOf('{'), txtS.lastIndexOf('}') + 1)).table.rows.filter(r => r.c[0] && r.c[0].v !== '날짜').map(r => ({ dateStr: r.c[0].v, titleStr: r.c[1]?.v || '', imgUrl: r.c[2]?.v || '', descStr: r.c[3]?.v || '', typeStr: r.c[4]?.v || '' }));
       lyricsData = JSON.parse(txtL.substring(txtL.indexOf('{'), txtL.lastIndexOf('}') + 1)).table.rows.filter(r => r.c[0] && r.c[0].v !== '곡제목').map(r => ({ title: r.c[0].v, content: r.c[1]?.v || '' }));
       
-      renderCalendar(currentYear, currentMonth); renderList(); renderLyrics();
+      /* 💥 etc 아코디언 시트 로드 파싱 프로토콜 (질문명제목 헤더 첫행 제외 처리) */
+      etcData = JSON.parse(txtE.substring(txtE.indexOf('{'), txtE.lastIndexOf('}') + 1)).table.rows.filter(r => r.c[0] && r.c[0].v !== '질문' && r.c[0].v !== '타이틀').map(r => ({ title: r.c[0].v, answer: r.c[1]?.v || '' }));
       
-      /* 💥 [수정 1, 2] 데이터 몽땅 긁어온 뒤, 세션 저장소 뒤적거려서 마지막 쓰던 탭 복구! 없으면 'calendar(monthly)' 강제 고정 픽스!! */
+      renderCalendar(currentYear, currentMonth); renderList(); 
+      renderLyricsButtons(); renderEtcAccordion();
+      
       const savedTab = sessionStorage.getItem('dp_current_tab') || 'calendar';
       switchTab(savedTab);
       
@@ -224,13 +272,42 @@
     }
   }
   
-  function renderLyrics() {
-    const g = document.getElementById('lyrics-grid'); g.innerHTML = '';
+  /* 💥 [미발매곡 가사 버튼식 가로 렌더링 엔진 보수] */
+  function renderLyricsButtons() {
+    const area = document.getElementById('lyrics-btn-area'); area.innerHTML = '';
     lyricsData.forEach(s => {
-      const d = document.createElement('div'); d.className = 'lyrics-item'; d.innerText = s.title;
-      d.onclick = () => { document.getElementById('l-title').innerText = s.title; document.getElementById('l-content').innerText = s.content; document.getElementById('lyrics-detail-view').style.display = 'block'; document.getElementById('main-view').style.display = 'none'; document.getElementById('lyrics-detail-view').scrollTop = 0; };
-      g.appendChild(d);
+      const btn = document.createElement('div'); btn.className = 'lyrics-btn-item'; btn.innerText = s.title;
+      btn.onclick = () => { 
+        document.getElementById('l-title').innerText = s.title; 
+        document.getElementById('l-content').innerText = s.content; 
+        document.getElementById('lyrics-detail-view').style.display = 'block'; 
+        document.getElementById('main-view').style.display = 'none'; 
+        document.getElementById('lyrics-detail-view').scrollTop = 0; 
+      };
+      area.appendChild(btn);
     });
+  }
+
+  /* 💥 [etc.. 아코디언 토글 클릭 엔진 기믹 신설] */
+  function renderEtcAccordion() {
+    const area = document.getElementById('etc-accordion-area'); area.innerHTML = '';
+    etcData.forEach((e, idx) => {
+      const wrap = document.createElement('div'); wrap.className = 'accordion-item';
+      wrap.innerHTML = `
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          <span>${e.title}</span>
+          <span class="accordion-icon">▼</span>
+        </div>
+        <div class="accordion-content">${e.answer}</div>
+      `;
+      area.appendChild(wrap);
+    });
+  }
+
+  /* 아코디언 토글 상태 반전 유틸리티 */
+  function toggleAccordion(element) {
+    const item = element.parentElement;
+    item.classList.toggle('active');
   }
   
   function prevMonth() { currentMonth--; if(currentMonth < 1) { currentMonth=12; currentYear--; } renderCalendar(currentYear, currentMonth); }
