@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>DragonPony Schedule v5.6 (Notion Checklist Premium)</title>
+<title>DragonPony Schedule v5.7 (Pixel Perfect Checklist)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
@@ -44,27 +44,27 @@
   .cal-event-list { flex-grow: 1; display: flex; flex-direction: column; justify-content: flex-end; width: 100%; gap: 2px; margin-top: 3px; overflow: hidden; }
   .cal-event { color: #222222; font-size: 0.55rem; padding: 1px 3px; border-radius: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; box-sizing: border-box; text-align: center; font-weight: 500; pointer-events: none; }
 
-  /* 💥 [수정 1, 2] 리스트 상단 마진 대폭 벌리고, 좌우 패딩을 20px -> 35px로 조여서 리스트 컴포넌트들을 슬림하게 축소!! (여백 미학 수호) */
+  /* [목록 페이지 스케일 압축 셋업] */
   .list-page { padding: 40px 35px 5px; }
-  
-  /* 💥 리스트 아이템 내부 세로 폭도 미세하게 압축 보정 */
   .schedule-item { display: flex; align-items: center; padding: 14px 0; border-bottom: 1px solid #eaeaea; cursor: pointer; }
   
-  /* 💥 [수정 2] 날짜, 라벨, 제목 폰트 사이즈를 균일하게 축소해서 노션 감성 최적화쇼!! */
+  /* 💥 날짜 가로 넓이를 확실히 잡아두어 밀림 현상 방지 */
   .date { font-weight: bold; color: #222222; width: 45px; font-size: 0.85rem; flex-shrink: 0; letter-spacing: -0.3px; }
-  .category-badge { padding: 2px 4px; margin-right: 10px; font-size: 0.55rem; font-weight: bold; color: #666666; border: 1px solid #dddddd; border-radius: 3px; white-space: nowrap; flex-shrink: 0; background: #f1f1f1; letter-spacing: -0.2px; }
+  
+  /* 💥 [수정 1] 카테고리 라벨에 고정 width(48px)와 text-align 중앙 정렬을 부여해서 제목 시작점을 칼정렬로 대동결쇼!! */
+  .category-badge { width: 48px; padding: 2px 0; margin-right: 15px; font-size: 0.55rem; font-weight: bold; color: #666666; border: 1px solid #dddddd; border-radius: 3px; white-space: nowrap; flex-shrink: 0; background: #f1f1f1; letter-spacing: -0.2px; text-align: center; box-sizing: border-box; }
   .category-badge.active { background: #222222; color: #ffffff; border-color: #222222; }
   .title { font-size: 0.85rem; flex-grow: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #333333; padding-right: 10px; }
   
-  /* 💥 [수정 2] 체크박스 크기도 리스트 축소 스케일에 맞춰 20px -> 16px로 슬림하게 압축쇼!! */
+  /* 💥 [수정 2] border-radius: 0px로 모서리 라운딩 완전 소각 엣지 사각화 + 폰트 키우고 상하 정렬 보정으로 흰색 체크표시 박스에 꽉 차게 세팅 완료쇼!! */
   .check-btn { 
-    width: 16px; height: 16px; border: 1.5px solid #cccccc; border-radius: 3px; 
+    width: 16px; height: 16px; border: 1.5px solid #cccccc; border-radius: 0px; 
     flex-shrink: 0; display: flex; align-items: center; justify-content: center; 
-    font-size: 9px; color: transparent; cursor: pointer; margin-left: auto;
-    background: transparent; z-index: 10;
+    font-size: 13px; font-weight: bold; color: transparent; cursor: pointer; margin-left: auto;
+    background: transparent; z-index: 10; line-height: 1; box-sizing: border-box;
   }
   .check-btn.checked { background: #222222; border-color: #222222; color: #ffffff; }
-  .check-btn.checked::after { content: '✓'; }
+  .check-btn.checked::after { content: '✓'; display: block; margin-top: -1px; }
 
   /* [가사 탭 & 데이터 관리] */
   .lyrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 35px 15px 15px; }
