@@ -3,7 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>DragonPony Schedule v6.0 (Notion Pixel Perfect etc)</title>
+<title>DragonPony Schedule v6.1 (Icon Bug Fixed)</title>
+
+<link rel="icon" type="image/jpeg" href="icon.jpg">
+<link rel="apple-touch-icon" href="icon.jpg">
+<link rel="shortcut icon" href="icon.jpg">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
@@ -68,22 +73,17 @@
   .etc-page { padding: 40px 35px 5px; }
   .section-title { font-size: 0.85rem; font-weight: 500; color: #222222; margin-bottom: 12px; letter-spacing: -0.3px; }
   
-  /* 💥 [수정 1] 미발매곡 가사 박스 높이를 시안 비율처럼 딱 맞춰 슬림하게 압축(padding 축소)쇼!! */
   .lyrics-box-container { background: #ffffff; border: 1px solid #cccccc; border-radius: 0px; padding: 45px 30px; margin-bottom: 50px; min-height: 120px; box-sizing: border-box; }
   
-  /* 💥 [수정 1] 가사 버튼 활성화 모서리 싹 다 깎아내서 완전 사각형으로 전량 리밸런싱쇼!! */
   .lyrics-btn-flex { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; align-items: center; }
   .lyrics-btn-item { background: #8e8e8e; border: none; border-radius: 0px; padding: 4px 15px; font-size: 0.85rem; font-weight: 500; color: #ffffff; cursor: pointer; transition: all 0.1s ease; text-align: center; }
 
-  /* 💥 [수정 2] etc 구역은 연회색 박스 싹 걷어내고 시안처럼 텍스트만 중앙 나열형 셋업쇼!! */
   .etc-box-container { padding: 10px 0; }
   .accordion-wrapper { display: flex; flex-direction: column; gap: 20px; align-items: center; justify-content: center; }
   .accordion-item { width: 100%; text-align: center; }
   
-  /* 💥 [수정 2] 질문 타이틀 텍스트 완전 중앙 정렬 및 노션핏 언더라인 도킹완료쇼!! */
   .accordion-header { display: inline-block; font-size: 0.85rem; font-weight: 500; color: #555555; cursor: pointer; padding: 4px 10px; text-decoration: underline; text-underline-offset: 3px; letter-spacing: -0.3px; }
   
-  /* 아코디언 본문 답변창 (답변 열려도 정갈하게 중앙 핏 유지) */
   .accordion-content { display: none; font-size: 0.8rem; color: #666666; line-height: 1.8; padding: 12px 10px 4px; white-space: pre-line; text-align: center; background: #fafafa; border: 1px dashed #eaeaea; margin-top: 8px; }
   .accordion-item.active .accordion-content { display: block; }
 
