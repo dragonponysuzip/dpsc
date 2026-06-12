@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>DragonPony Schedule v5.1 (Notion Edition)</title>
+<title>DragonPony Schedule v5.2 (Notion Premium Edition)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
@@ -17,33 +17,35 @@
   .view-content { flex-grow: 1; height: 0; overflow-y: auto; display: none; background: #ffffff; padding-bottom: 120px; }
   .view-content.active { display: block; }
 
-  /* [헤더 & 탭] */
-  .header { background: #ffffff; color: #222222; padding: 20px 20px 12px; text-align: center; border-bottom: 1px solid #eaeaea; flex-shrink: 0; }
-  .main-title { block; font-family: 'Bebas Neue', sans-serif; font-size: 1.25rem; letter-spacing: 1.5px; color: #222222; line-height: 1; display: block; }
-  .sub-title-link { display: block; font-size: 0.65rem; color: #999999; text-decoration: none; margin-top: 5px; letter-spacing: 0.5px; }
-  .tab-wrap { display: flex; border-bottom: 1px solid #eaeaea; flex-shrink: 0; background: #ffffff; }
-  .tab-btn { flex: 1; padding: 12px 0; border: none; background: none; font-size: 0.85rem; font-weight: 500; color: #888888; cursor: pointer; transition: 0.2s; }
-  .tab-btn.active { color: #222222; font-weight: bold; border-bottom: 2px solid #222222; }
+  /* 💥 [수정 1] 제일 상단 타이틀 구역 화이트 여백 대폭 확장쇼!! (이미지 시안 반영) */
+  .header { background: #ffffff; color: #222222; padding: 60px 20px 40px; text-align: center; border-bottom: none; flex-shrink: 0; }
+  .main-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 2px; color: #222222; line-height: 1; display: block; }
+  .sub-title-link { display: block; font-size: 0.7rem; color: #aaaaaa; text-decoration: none; margin-top: 8px; letter-spacing: 0.5px; }
+  
+  /* 💥 [수정 2] 탭 메뉴 랩 보더 제거 및 패딩 밸런스 조정 */
+  .tab-wrap { display: flex; border-bottom: none; flex-shrink: 0; background: #ffffff; padding: 0 20px; gap: 5px; }
+  
+  /* 💥 [수정 3] 탭 클릭 시 회색 박스 블록 + 화이트 글씨 반전 노션 스타일 치트키 도킹!! */
+  .tab-btn { flex: 1; padding: 6px 0; border: none; background: none; font-size: 0.85rem; font-weight: 500; color: #222222; cursor: pointer; transition: all 0.15s ease; border-radius: 4px; text-align: center; }
+  .tab-btn.active { background: #8e8e8e; color: #ffffff; font-weight: 600; }
 
-  /* [달력 디자인 - 화이트 그리드 및 클릭 수호] */
-  .cal-header-wrap { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; flex-shrink: 0; }
+  /* 💥 [수정 2-2] monthly 메뉴들과 밑에 월간 캘린더 사이 상단 간격 시안처럼 넓게 확보쇼!! */
+  .cal-header-wrap { display: flex; justify-content: space-between; align-items: center; padding: 40px 25px 20px; flex-shrink: 0; }
   .cal-nav-btn { background: none; border: none; color: #cccccc; font-size: 1.0rem; cursor: pointer; padding: 8px; }
   #cal-title { font-size: 1.15rem; font-weight: 700; color: #222222; }
   .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; padding: 0 15px 15px; flex-shrink: 0; }
   .cal-day-name { font-size: 0.65rem; color: #999999; text-align: center; margin-bottom: 8px; font-weight: bold; }
   
-  /* 💥 cal-day 자체에 cursor 추가 및 터치 영역 강화쇼!! */
+  /* [달력 디자인 - 클릭 수호 프로토콜] */
   .cal-day { aspect-ratio: 1 / 1.5; border: 1px solid #eaeaea; border-radius: 6px; padding: 6px 2px; font-size: 0.8rem; position: relative; display: flex; flex-direction: column; align-items: center; overflow: hidden; background: #ffffff; cursor: pointer; }
   .cal-day.today { border: 1.5px solid #222222; background: #fafafa; }
   .day-num { font-size: 0.85rem; color: #222222; font-weight: 600; display: block; line-height: 1.1; margin-top: 1px; }
   .today-tag { font-size: 0.45rem; color: #222222; font-weight: bold; display: block; margin-top: 2px; line-height: 1; letter-spacing: -0.2px; }
   .cal-event-list { flex-grow: 1; display: flex; flex-direction: column; justify-content: flex-end; width: 100%; gap: 2px; margin-top: 3px; overflow: hidden; }
-  
-  /* 💥 pointer-events: none; 처리로 클릭 씹힘 버그 완전 소각쇼!! */
   .cal-event { color: #222222; font-size: 0.55rem; padding: 1px 3px; border-radius: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; box-sizing: border-box; text-align: center; font-weight: 500; pointer-events: none; }
 
-  /* [목록 페이지] */
-  .list-page { padding: 5px 20px; }
+  /* [목록 페이지 - 간격 최적화] */
+  .list-page { padding: 25px 20px 5px; }
   .schedule-item { display: flex; align-items: center; padding: 16px 0; border-bottom: 1px solid #eaeaea; cursor: pointer; }
   .date { font-weight: bold; color: #222222; width: 50px; font-size: 0.95rem; flex-shrink: 0; }
   .category-badge { padding: 2px 5px; margin-right: 12px; font-size: 0.6rem; font-weight: bold; color: #666666; border: 1px solid #dddddd; border-radius: 3px; white-space: nowrap; flex-shrink: 0; background: #f1f1f1; }
@@ -61,7 +63,7 @@
   .check-btn.checked::after { content: '✓'; }
 
   /* [가사 탭 & 데이터 관리] */
-  .lyrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 15px; }
+  .lyrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 35px 15px 15px; }
   .lyrics-item { background: #ffffff; border: 1px solid #eaeaea; padding: 22px 8px; border-radius: 8px; text-align: center; font-size: 0.85rem; font-weight: 600; color: #333333; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
   .lyrics-item:hover { background: #fafafa; }
   .data-mgmt { margin: 30px 0 80px; padding: 20px 15px; border: 1px solid #eaeaea; border-radius: 8px; background: #fafafa; text-align: center; }
@@ -69,7 +71,7 @@
   .data-btn-row { display: flex; gap: 8px; }
   .data-btn { flex: 1; padding: 10px; background: #ffffff; border: 1px solid #dddddd; color: #555555; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: bold; }
 
-  /* [상세 레이아웃 모바일 뒤로가기 수호] */
+  /* [상세 레이아웃] */
   .detail-page, .lyrics-detail { display: none; background: #ffffff; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; overflow-y: auto; color: #222222; }
   .floating-back-btn { 
     position: sticky; 
@@ -89,11 +91,13 @@
 <div class="app-wrap">
   <div id="main-view" style="display: flex; flex-direction: column; height: 100%;">
     <div class="header"><span class="main-title">DRAGON PONY SCHEDULE</span><a href="https://www.instagram.com/dragonpony_/" target="_blank" class="sub-title-link">@dragonpony_</a></div>
+    
     <div class="tab-wrap">
-      <button class="tab-btn active" onclick="switchTab('calendar')" id="btn-calendar">월간 스케줄</button>
-      <button class="tab-btn" onclick="switchTab('list')" id="btn-list">목록 보기</button>
-      <button class="tab-btn" onclick="switchTab('lyrics')" id="btn-lyrics">미발매곡 가사</button>
+      <button class="tab-btn active" onclick="switchTab('calendar')" id="btn-calendar">monthly</button>
+      <button class="tab-btn" onclick="switchTab('list')" id="btn-list">check list</button>
+      <button class="tab-btn" onclick="switchTab('lyrics')" id="btn-lyrics">etc.</button>
     </div>
+    
     <div id="calendar-view" class="view-content active"><div class="cal-header-wrap"><button class="cal-nav-btn" onclick="prevMonth()">◀</button><span id="cal-title"></span><button class="cal-nav-btn" onclick="nextMonth()">▶</button></div><div class="cal-grid" id="cal-grid"></div></div>
     <div id="list-view" class="view-content"><div id="schedule-list" class="list-page"></div><div class="data-mgmt"><div class="data-mgmt-title">CHECK DATA BACKUP</div><div class="data-btn-row"><button class="data-btn" onclick="exportData()">기록 내보내기</button><button class="data-btn" onclick="importData()">기록 가져오기</button></div></div></div>
     <div id="lyrics-view" class="view-content"><div class="lyrics-grid" id="lyrics-grid"></div></div>
@@ -183,7 +187,6 @@
     return false;
   }
   
-  /* 💥 [대수정] 부모 cal-day 칸 자체에 클릭 이벤트를 심어서 내부 레이블 버그 완전 박멸쇼!! */
   function renderCalendar(y, m) {
     const g = document.getElementById('cal-grid'); g.innerHTML = ''; document.getElementById('cal-title').innerText = `${y}년 ${m}월`;
     const last = new Date(y, m, 0).getDate(), first = new Date(y, m-1, 1).getDay();
@@ -194,7 +197,6 @@
       const cell = new Date(y, m-1, d); const evs = scheduleData.filter(ev => isDateInRange(m, d, ev.dateStr));
       const dayEl = document.createElement('div'); dayEl.className = 'cal-day' + (cell.getTime()===today.getTime()?' today':'');
       
-      // 💥 그날 일정이 존재하면, 날짜 칸을 누르는 순간 첫 번째 일정 상세가 똭 뜨도록 위임 처리!!
       if(evs.length > 0) {
         dayEl.onclick = () => openDetail(evs[0].dateStr, evs[0].titleStr, evs[0].imgUrl, evs[0].descStr);
       }
