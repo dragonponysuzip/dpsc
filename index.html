@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>DragonPony Schedule v5.7 (Pixel Perfect Checklist)</title>
+<title>DragonPony Schedule v5.8 (State Retention Edition)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
@@ -47,16 +47,14 @@
   /* [목록 페이지 스케일 압축 셋업] */
   .list-page { padding: 40px 35px 5px; }
   .schedule-item { display: flex; align-items: center; padding: 14px 0; border-bottom: 1px solid #eaeaea; cursor: pointer; }
-  
-  /* 💥 날짜 가로 넓이를 확실히 잡아두어 밀림 현상 방지 */
   .date { font-weight: bold; color: #222222; width: 45px; font-size: 0.85rem; flex-shrink: 0; letter-spacing: -0.3px; }
   
-  /* 💥 [수정 1] 카테고리 라벨에 고정 width(48px)와 text-align 중앙 정렬을 부여해서 제목 시작점을 칼정렬로 대동결쇼!! */
+  /* 카테고리 라벨 칼정렬 */
   .category-badge { width: 48px; padding: 2px 0; margin-right: 15px; font-size: 0.55rem; font-weight: bold; color: #666666; border: 1px solid #dddddd; border-radius: 3px; white-space: nowrap; flex-shrink: 0; background: #f1f1f1; letter-spacing: -0.2px; text-align: center; box-sizing: border-box; }
   .category-badge.active { background: #222222; color: #ffffff; border-color: #222222; }
   .title { font-size: 0.85rem; flex-grow: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #333333; padding-right: 10px; }
   
-  /* 💥 [수정 2] border-radius: 0px로 모서리 라운딩 완전 소각 엣지 사각화 + 폰트 키우고 상하 정렬 보정으로 흰색 체크표시 박스에 꽉 차게 세팅 완료쇼!! */
+  /* 사각 체크박스 */
   .check-btn { 
     width: 16px; height: 16px; border: 1.5px solid #cccccc; border-radius: 0px; 
     flex-shrink: 0; display: flex; align-items: center; justify-content: center; 
@@ -98,12 +96,12 @@
     
     <div class="tab-wrap">
       <button class="tab-btn" onclick="switchTab('calendar')" id="btn-calendar"><span>monthly</span></button>
-      <button class="tab-btn active" onclick="switchTab('list')" id="btn-list"><span>check list</span></button>
+      <button class="tab-btn" onclick="switchTab('list')" id="btn-list"><span>check list</span></button>
       <button class="tab-btn" onclick="switchTab('lyrics')" id="btn-lyrics"><span>etc.</span></button>
     </div>
     
     <div id="calendar-view" class="view-content"><div class="cal-header-wrap"><button class="cal-nav-btn" onclick="prevMonth()">◀</button><span id="cal-title"></span><button class="cal-nav-btn" onclick="nextMonth()">▶</button></div><div class="cal-grid" id="cal-grid"></div></div>
-    <div id="list-view" class="view-content active"><div id="schedule-list" class="list-page"></div><div class="data-mgmt"><div class="data-mgmt-title">CHECK DATA BACKUP</div><div class="data-btn-row"><button class="data-btn" onclick="exportData()">기록 내보내기</button><button class="data-btn" onclick="importData()">기록 가져오기</button></div></div></div>
+    <div id="list-view" class="view-content"><div id="schedule-list" class="list-page"></div><div class="data-mgmt"><div class="data-mgmt-title">CHECK DATA BACKUP</div><div class="data-btn-row"><button class="data-btn" onclick="exportData()">기록 내보내기</button><button class="data-btn" onclick="importData()">기록 가져오기</button></div></div></div>
     <div id="lyrics-view" class="view-content"><div class="lyrics-grid" id="lyrics-grid"></div></div>
     <div class="footer"><a href="#" style="color:#bbbbbb; font-size:0.75rem; text-decoration:none;">@dragonponysuzip</a></div>
   </div>
@@ -131,7 +129,14 @@
   const typeColors = { '방송': '#edf2fc', '공연': '#fdf2e9', '기타': '#f3f0fa', '콘텐츠': '#e8f8f5' }; 
   
   function getAttendance() { const s = localStorage.getItem('dp_attendance'); return s ? JSON.parse(s) : {}; }
-  function switchTab(t) { document.querySelectorAll('.tab-btn, .view-content').forEach(e => e.classList.remove('active')); document.getElementById('btn-'+t).classList.add('active'); document.getElementById(t+'-view').classList.add('active'); }
+  
+  /* 💥 [수정 2] switchTab 가동 시 sessionStorage에 누님이 마지막에 누른 탭 문자열 코드를 세이브 완료쇼!! */
+  function switchTab(t) { 
+    document.querySelectorAll('.tab-btn, .view-content').forEach(e => e.classList.remove('active')); 
+    document.getElementById('btn-'+t).classList.add('active'); 
+    document.getElementById(t+'-view').classList.add('active'); 
+    sessionStorage.setItem('dp_current_tab', t);
+  }
 
   async function fetchData() {
     const sId = '1UKMplA90Fz4x3ueJtjRSOGOK1bD1c74GkK-wo573dG4', lId = '1zfCSs8P8qEtDaWQlYFaCb7f1-roga3uyGLeWGDtUfME';
@@ -140,7 +145,13 @@
       const [txtS, txtL] = await Promise.all([resS.text(), resL.text()]);
       scheduleData = JSON.parse(txtS.substring(txtS.indexOf('{'), txtS.lastIndexOf('}') + 1)).table.rows.filter(r => r.c[0] && r.c[0].v !== '날짜').map(r => ({ dateStr: r.c[0].v, titleStr: r.c[1]?.v || '', imgUrl: r.c[2]?.v || '', descStr: r.c[3]?.v || '', typeStr: r.c[4]?.v || '' }));
       lyricsData = JSON.parse(txtL.substring(txtL.indexOf('{'), txtL.lastIndexOf('}') + 1)).table.rows.filter(r => r.c[0] && r.c[0].v !== '곡제목').map(r => ({ title: r.c[0].v, content: r.c[1]?.v || '' }));
+      
       renderCalendar(currentYear, currentMonth); renderList(); renderLyrics();
+      
+      /* 💥 [수정 1, 2] 데이터 몽땅 긁어온 뒤, 세션 저장소 뒤적거려서 마지막 쓰던 탭 복구! 없으면 'calendar(monthly)' 강제 고정 픽스!! */
+      const savedTab = sessionStorage.getItem('dp_current_tab') || 'calendar';
+      switchTab(savedTab);
+      
     } catch(e) { console.error(e); }
   }
 
