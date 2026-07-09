@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>DragonPony Schedule v7.2 (All Months Fixed)</title>
+<title>DragonPony Schedule v7.3 (Detail Pixel Perfect)</title>
 
 <link rel="icon" type="image/jpeg" href="icon.jpg">
 <link rel="apple-touch-icon" href="icon.jpg">
@@ -12,6 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+<!-- 픽셀 감성을 위한 둥근모 웹폰트 프로토콜 -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/DungGeunMo.woff">
 
 <style>
@@ -108,7 +109,17 @@
   
   .canvas-header { text-align: center; margin-bottom: 25px; width: 100%; }
   .canvas-header .c-emojis { font-size: 1.5rem; display: block; margin-bottom: 5px; }
-  .canvas-header .c-main-title { font-family: 'DungGeunMo', sans-serif; font-size: 1.65rem; color: #222222; letter-spacing: 1px; display: block; margin: 0; font-weight: normal; }
+  
+  /* 🟥 누님 피드백 반영: 메인 타이틀을 힙한 픽셀 웹폰트('둥근모')로 완전 박제 때렸슴다! */
+  .canvas-header .c-main-title { 
+    font-family: 'DungGeunMo', sans-serif; 
+    font-size: 1.65rem; 
+    color: #222222; 
+    letter-spacing: 1px; 
+    display: block; 
+    margin: 0; 
+    font-weight: normal; 
+  }
   .canvas-header .c-sub-title { font-family: 'Pretendard', sans-serif; font-size: 0.7rem; color: #aaaaaa; display: block; margin-top: 5px; }
   
   .canvas-grid-wrap {
@@ -119,11 +130,12 @@
     align-items: start;
   }
   
+  /* 🟥 누님 피드백 반영: border-radius 제거해서 뾰족한 칼각 모서리로 개조! */
   .canvas-month-box {
     display: flex;
     flex-direction: column;
     border: 1px solid #cccccc;
-    border-radius: 4px;
+    border-radius: 0px; /* 칼각 포지션 */
     overflow: hidden;
     background: #ffffff;
   }
@@ -204,7 +216,8 @@
       
       <div class="data-mgmt" style="margin-top: 20px;">
         <div class="data-mgmt-title">2026 HALF-YEAR REVIEW</div>
-        <button class="data-btn" onclick="openSettlement()" style="background:#222222; color:#ffffff; border-color:#222222; width:100%; padding:12px; font-size:0.85rem;">상반기 결산 이미지 뽑기 🐲</button>
+        <!-- 🟥 누님 피드백 반영: 용 이모지 빼고 컴퓨터 💻 이모지로 전격 교체완료! -->
+        <button class="data-btn" onclick="openSettlement()" style="background:#222222; color:#ffffff; border-color:#222222; width:100%; padding:12px; font-size:0.85rem;">상반기 결산 이미지 뽑기 💻</button>
       </div>
 
       <div class="data-mgmt"><div class="data-mgmt-title">CHECK DATA BACKUP</div><div class="data-btn-row"><button class="data-btn" onclick="exportData()">기록 내보내기</button><button class="data-btn" onclick="importData()">기록 가져오기</button></div></div>
@@ -254,7 +267,7 @@
       </div>
       
       <div class="canvas-grid-wrap" id="canvas-grid-content">
-        <!-- 스크립트가 다이내믹 가변 행 구조를 쏴버리는 프로토콜 구역 -->
+        <!-- 스크립트가 세로 배치 칼정렬 순서로 쏴버리는 마법의 구역 -->
       </div>
     </div>
     
@@ -426,7 +439,7 @@
   function exportData() { const d = localStorage.getItem('dp_attendance'); if(!d || d === '{}') return alert("내보낼 기록이 없세혁!"); navigator.clipboard.writeText(btoa(encodeURIComponent(d))).then(() => alert("체크 기록이 복사되었어요!\n메모장이나 카톡에 붙여넣어 보관하세혁♡,,♡")); }
   function importData() { const c = prompt("복사해둔 백업 코드를 입력해주세혁:"); if(!c) return; try { localStorage.setItem('dp_attendance', decodeURIComponent(atob(c))); alert("기록 복구 성공! 🎸"); location.reload(); } catch(e) { alert("잘못된 코드인 것 같아요. 다시 확인해주세혁ㅠ..ㅠ!"); } }
 
-  /* ──────── [상반기 결산 이미지 프리 패스 스크립트] ──────── */
+  /* ──────── [상반기 결산 완벽 최적화 스크립트 엔진] ──────── */
   function openSettlement() {
     document.getElementById('main-view').style.display = 'none';
     document.getElementById('settlement-view').style.display = 'block';
@@ -443,18 +456,17 @@
     gridArea.innerHTML = '';
     const att = getAttendance();
 
-    for (let m = 1; m <= 6; m++) {
-      // 어떤 날짜 데이터 형식이 들어와도 확실하게 월(Month)만 발라내는 완전 무결 필터링 레이어!
+    // 🟥 누님 피드백 반영: 왼쪽(1,2,3월) 오른쪽(4,5,6월) 순서 맵핑 어레이 셋업!
+    const monthOrder = [1, 4, 2, 5, 3, 6];
+
+    monthOrder.forEach(m => {
+      // 월별 데이터 추출 및 10진수 바인딩
       const monthEvents = scheduleData.filter(ev => {
         if (!ev.dateStr) return false;
-        
-        // 날짜 문자열 정리 (예: '2026-01-01' -> '01-01' 또는 '01/01')
         let cleanDate = ev.dateStr.split('-')[0].trim();
-        if (cleanDate.includes('2026')) {
+        if (displayDateHasYear = cleanDate.includes('2026')) {
           cleanDate = cleanDate.replace('2026', '').replace(/^[^\d]+/, '').trim();
         }
-        
-        // 슬래시(/)나 하이픈(-) 기준으로 월 데이터 추출
         const separator = cleanDate.includes('/') ? '/' : '-';
         const startMonth = parseInt(cleanDate.split(separator)[0], 10);
         return startMonth === m;
@@ -463,48 +475,54 @@
         let cleanB = b.dateStr.split('-')[0].trim().replace('2026', '').replace(/^[^\d]+/, '').trim();
         const sepA = cleanA.includes('/') ? '/' : '-';
         const sepB = cleanB.includes('/') ? '/' : '-';
-        
         const dayA = parseInt(cleanA.split(sepA)[1], 10);
         const dayB = parseInt(cleanB.split(sepB)[1], 10);
         return dayA - dayB;
       });
 
-      if (monthEvents.length === 0) continue;
-
       const monthBox = document.createElement('div');
       monthBox.className = 'canvas-month-box';
 
+      // 해당 달에 스케줄이 아예 없더라도 표 형태를 유지해야 하므로, 라벨은 무조건 생성함다!
       const label = document.createElement('div');
       label.className = 'month-label';
       label.innerText = `${m}월`;
       monthBox.appendChild(label);
 
-      monthEvents.forEach(ev => {
+      // 스케줄 데이터가 있으면 가변형 레이아웃 렌더링, 없으면 빈 줄 1줄만 예의상 생성함다
+      if (monthEvents.length > 0) {
+        monthEvents.forEach(ev => {
+          const row = document.createElement('div');
+          row.className = 'canvas-row';
+
+          let displayDate = ev.dateStr.split('-')[0].trim();
+          if (displayDate.includes('2026')) {
+            displayDate = displayDate.replace('2026', '').replace(/^[^\d]+/, '').trim();
+          }
+
+          const isAttended = att[ev.titleStr] === true;
+
+          row.innerHTML = `
+            <span class="c-date">${displayDate}</span>
+            <span class="c-title">
+              ${ev.titleStr}
+              <div class="c-box-overlay ${isAttended ? 'attended-box' : ''}">
+                ${isAttended ? '✓' : ''}
+              </div>
+            </span>
+          `;
+          monthBox.appendChild(row);
+        });
+      } else {
         const row = document.createElement('div');
         row.className = 'canvas-row';
-
-        // 이미지에 찍힐 날짜 포맷 깔끔하게 정리 프로토콜
-        let displayDate = ev.dateStr.split('-')[0].trim();
-        if (displayDate.includes('2026')) {
-          displayDate = displayDate.replace('2026', '').replace(/^[^\d]+/, '').trim();
-        }
-
-        const isAttended = att[ev.titleStr] === true;
-
-        row.innerHTML = `
-          <span class="c-date">${displayDate}</span>
-          <span class="c-title">
-            ${ev.titleStr}
-            <div class="c-box-overlay ${isAttended ? 'attended-box' : ''}">
-              ${isAttended ? '✓' : ''}
-            </div>
-          </span>
-        `;
+        row.style.color = '#dddddd';
+        row.innerHTML = `<span class="c-date">/</span><span class="c-title" style="padding-left:6px;">등록된 스케줄이 없세혁</span>`;
         monthBox.appendChild(row);
-      });
+      }
 
       gridArea.appendChild(monthBox);
-    }
+    });
   }
 
   function downloadSettlementImage() {
