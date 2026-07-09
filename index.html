@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>DragonPony Schedule v7.7 (Details Open State Fixed)</title>
+<title>DragonPony Schedule v7.8 (Yellow Stamp Overlay Fixed)</title>
 
 <link rel="icon" type="image/jpeg" href="icon.jpg">
 <link rel="apple-touch-icon" href="icon.jpg">
@@ -183,11 +183,13 @@
     background: transparent;
   }
   
+  /* 🟥 누님 피드백 반영: 오프 출석용 도트 박스 배경을 쨍한 노란색(#ffd43b)으로 전격 변경!! */
   .c-box-overlay.attended-box {
-    background: #222222;
-    color: #ffffff;
+    background: #ffd43b; /* 락페 감성 옐로우 */
+    color: #222222;      /* 검은색 체크마크로 가시성 상향 */
     font-size: 7px;
     font-weight: bold;
+    border-color: #222222;
   }
 
   .download-trigger-btn {
@@ -272,7 +274,6 @@
 <script>
   let currentYear = new Date().getFullYear(), currentMonth = new Date().getMonth() + 1;
   let scheduleData = [], lyricsData = [], etcData = [], currentFilter = '';
-  // 🟥 글로벌 변수로 지나간 스케줄 창의 열림 상태를 강제 저장함다!
   let isPastSchedulesOpen = false; 
   const typeColors = { '방송': '#edf2fc', '공연': '#fdf2e9', '기타': '#f3f0fa', '콘텐츠': '#e8f8f5' }; 
   
@@ -319,7 +320,6 @@
     att[title] = !att[title];
     localStorage.setItem('dp_attendance', JSON.stringify(att));
     
-    // 🟥 체크박스 누르기 직전, 현재 details 엘리먼트가 열려있는지 닫혀있는지 상태를 캐치해서 동기화함다!
     const pastEl = document.getElementById('past-details-wrapper');
     if (pastEl) {
       isPastSchedulesOpen = pastEl.hasAttribute('open');
@@ -328,7 +328,6 @@
     renderList();
   }
 
-  /* ──────── 덮어쓰기 완료된 대망의 리스트 메모라이즈 엔진 구역 ──────── */
   function renderList() {
     const list = document.getElementById('schedule-list'); list.innerHTML = '';
     const att = getAttendance(); const today = new Date(); today.setHours(0,0,0,0);
@@ -340,14 +339,11 @@
     const filtered = currentFilter ? scheduleData.filter(d => d.typeStr === currentFilter) : scheduleData;
     const upW = document.createElement('div'), pastD = document.createElement('details');
     
-    // 🟥 상태 추적 아이디 부여 및 브라우저 강제 닫힘 버그 완벽 차단!
     pastD.id = 'past-details-wrapper';
     pastD.className = 'past-schedules'; 
     
-    // 유저가 진짜 손가락으로 SUMMARY 글자를 직접 눌러서 여닫을 때만 상태를 변경하게 제어함다!
     pastD.onclick = function(e) {
       if (e.target.tagName === 'SUMMARY') {
-        // 토글 동작 시 브라우저 속도차이를 고려하여 비동기로 열림 상태 최종 추적
         setTimeout(() => {
           isPastSchedulesOpen = pastD.hasAttribute('open');
         }, 10);
@@ -380,7 +376,6 @@
     
     if(pastW.children.length > 0) {
       list.appendChild(pastD);
-      // 🟥 [핵심 마법] 리스트가 새로 그려진 직후, 이전에 열려 있었다면 open 속성을 강제로 다시 주입해서 문을 강제로 열어둡니다!!
       if (isPastSchedulesOpen) {
         pastD.setAttribute('open', '');
       }
