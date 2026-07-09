@@ -1,493 +1,652 @@
 <!DOCTYPE html>
+
 <html lang="ko">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>DragonPony Schedule v6.2 (Half-Year Review Fixed)</title>
+
+<title>DragonPony Schedule v6.1 (Icon Bug Fixed)</title>
+
+
 
 <link rel="icon" type="image/jpeg" href="icon.jpg">
+
 <link rel="apple-touch-icon" href="icon.jpg">
+
 <link rel="shortcut icon" href="icon.jpg">
 
+
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
+
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
-<!-- 픽셀 감성을 위한 둥근모 폰트 추가함다 누님! -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/DungGeunMo.woff">
 
 <style>
+
   /* [노션 스타일 미니멀 테마] */
+
   body { font-family: 'Pretendard', sans-serif; margin: 0; background-color: #f7f7f7; height: 100vh; overflow: hidden; -webkit-tap-highlight-color: transparent; }
+
   .app-wrap { max-width: 480px; margin: 0 auto; background: #ffffff; color: #222222; height: 100%; position: relative; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+
   
+
   .view-content::-webkit-scrollbar, .lyrics-detail::-webkit-scrollbar, .detail-page::-webkit-scrollbar { width: 0px; background: transparent; } 
+
   .view-content, .lyrics-detail, .detail-page { -ms-overflow-style: none; scrollbar-width: none; } 
+
   .view-content { flex-grow: 1; height: 0; overflow-y: auto; display: none; background: #ffffff; padding-bottom: 120px; }
+
   .view-content.active { display: block; }
 
+
+
   /* [제일 상단 타이틀 구역 화이트 여백] */
+
   .header { background: #ffffff; color: #222222; padding: 60px 20px 55px; text-align: center; border-bottom: none; flex-shrink: 0; }
+
   .main-title { font-size: 1.6rem; letter-spacing: 4px; line-height: 1; display: block; }
+
   .sub-title-link { display: block; font-size: 0.7rem; color: #aaaaaa; text-decoration: none; margin-top: 12px; letter-spacing: 0.5px; }
+
   
+
   .tab-wrap { display: flex; border-bottom: none; flex-shrink: 0; background: #ffffff; padding: 0 20px; }
+
   
+
   /* [회색 박스 가로폭 슬림 핏 프로토콜] */
+
   .tab-btn { flex: 1; padding: 3px 0; border: none; background: none; font-size: 0.85rem; font-weight: 500; color: #222222; cursor: pointer; transition: all 0.1s ease; border-radius: 0px; text-align: center; line-height: 1.2; display: flex; align-items: center; justify-content: center; }
+
   .tab-btn span { padding: 3px 12px; display: inline-block; transition: all 0.1s ease; }
+
   .tab-btn.active span { background: #8e8e8e; color: #ffffff; }
 
+
+
   /* [monthly 메뉴들과 밑에 월간 캘린더 사이 상단 간격] */
+
   .cal-header-wrap { display: flex; justify-content: space-between; align-items: center; padding: 40px 25px 20px; flex-shrink: 0; }
+
   .cal-nav-btn { background: none; border: none; color: #cccccc; font-size: 1.0rem; cursor: pointer; padding: 8px; }
+
   #cal-title { font-size: 1.15rem; font-weight: 700; color: #222222; }
+
   .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; padding: 0 15px 15px; flex-shrink: 0; }
+
   .cal-day-name { font-size: 0.65rem; color: #999999; text-align: center; margin-bottom: 8px; font-weight: bold; }
+
   
+
   /* [달력 디자인] */
+
   .cal-day { aspect-ratio: 1 / 1.5; border: 1px solid #eaeaea; border-radius: 6px; padding: 6px 2px; font-size: 0.8rem; position: relative; display: flex; flex-direction: column; align-items: center; overflow: hidden; background: #ffffff; cursor: pointer; }
+
   .cal-day.today { border: 1.5px solid #222222; background: #fafafa; }
+
   .day-num { font-size: 0.85rem; color: #222222; font-weight: 600; display: block; line-height: 1.1; margin-top: 1px; }
+
   .today-tag { font-size: 0.45rem; color: #222222; font-weight: bold; display: block; margin-top: 2px; line-height: 1; letter-spacing: -0.2px; }
+
   .cal-event-list { flex-grow: 1; display: flex; flex-direction: column; justify-content: flex-end; width: 100%; gap: 2px; margin-top: 3px; overflow: hidden; }
+
   .cal-event { color: #222222; font-size: 0.55rem; padding: 1px 3px; border-radius: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; box-sizing: border-box; text-align: center; font-weight: 500; pointer-events: none; }
 
+
+
   /* [목록 페이지 스케일 압축 셋업] */
+
   .list-page { padding: 40px 35px 5px; }
+
   .schedule-item { display: flex; align-items: center; padding: 14px 0; border-bottom: 1px solid #eaeaea; cursor: pointer; }
+
   .date { font-weight: bold; color: #222222; width: 45px; font-size: 0.85rem; flex-shrink: 0; letter-spacing: -0.3px; }
+
   
+
   /* 카테고리 라벨 칼정렬 */
+
   .category-badge { width: 48px; padding: 2px 0; margin-right: 15px; font-size: 0.55rem; font-weight: bold; color: #666666; border: 1px solid #dddddd; border-radius: 3px; white-space: nowrap; flex-shrink: 0; background: #f1f1f1; letter-spacing: -0.2px; text-align: center; box-sizing: border-box; }
+
   .category-badge.active { background: #222222; color: #ffffff; border-color: #222222; }
+
   .title { font-size: 0.85rem; flex-grow: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #333333; padding-right: 10px; }
+
   
+
   /* 사각 체크박스 */
+
   .check-btn { 
+
     width: 16px; height: 16px; border: 1.5px solid #cccccc; border-radius: 0px; 
+
     flex-shrink: 0; display: flex; align-items: center; justify-content: center; 
+
     font-size: 13px; font-weight: bold; color: transparent; cursor: pointer; margin-left: auto;
+
     background: transparent; z-index: 10; line-height: 1; box-sizing: border-box;
+
   }
+
   .check-btn.checked { background: #222222; border-color: #222222; color: #ffffff; }
+
   .check-btn.checked::after { content: '✓'; display: block; margin-top: -1px; }
 
+
+
   /* [etc 탭 픽셀 매칭 개조 구역] */
+
   .etc-page { padding: 40px 35px 5px; }
+
   .section-title { font-size: 0.85rem; font-weight: 500; color: #222222; margin-bottom: 12px; letter-spacing: -0.3px; }
+
   
+
   .lyrics-box-container { background: #ffffff; border: 1px solid #cccccc; border-radius: 0px; padding: 45px 30px; margin-bottom: 50px; min-height: 120px; box-sizing: border-box; }
+
   
+
   .lyrics-btn-flex { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; align-items: center; }
+
   .lyrics-btn-item { background: #8e8e8e; border: none; border-radius: 0px; padding: 4px 15px; font-size: 0.85rem; font-weight: 500; color: #ffffff; cursor: pointer; transition: all 0.1s ease; text-align: center; }
 
+
+
   .etc-box-container { padding: 10px 0; }
+
   .accordion-wrapper { display: flex; flex-direction: column; gap: 20px; align-items: center; justify-content: center; }
+
   .accordion-item { width: 100%; text-align: center; }
+
   
+
   .accordion-header { display: inline-block; font-size: 0.85rem; font-weight: 500; color: #555555; cursor: pointer; padding: 4px 10px; text-decoration: underline; text-underline-offset: 3px; letter-spacing: -0.3px; }
+
   
+
   .accordion-content { display: none; font-size: 0.8rem; color: #666666; line-height: 1.8; padding: 12px 10px 4px; white-space: pre-line; text-align: center; background: #fafafa; border: 1px dashed #eaeaea; margin-top: 8px; }
+
   .accordion-item.active .accordion-content { display: block; }
 
+
+
   /* 데이터 백업 관리 구역 */
-  .data-mgmt { margin: 40px 0 20px; padding: 20px 15px; border: 1px solid #eaeaea; border-radius: 8px; background: #fafafa; text-align: center; }
+
+  .data-mgmt { margin: 40px 0 80px; padding: 20px 15px; border: 1px solid #eaeaea; border-radius: 8px; background: #fafafa; text-align: center; }
+
   .data-mgmt-title { font-size: 0.75rem; color: #666666; margin-bottom: 12px; font-weight: bold; letter-spacing: 0.5px; }
+
   .data-btn-row { display: flex; gap: 8px; }
+
   .data-btn { flex: 1; padding: 10px; background: #ffffff; border: 1px solid #dddddd; color: #555555; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: bold; }
 
+
+
   /* [상세 레이아웃] */
+
   .detail-page, .lyrics-detail { display: none; background: #ffffff; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; overflow-y: auto; color: #222222; }
+
   .floating-back-btn { 
+
     position: sticky; 
+
     top: 15px; left: 15px; width: 34px; height: 34px; border-radius: 50%; 
+
     background: rgba(255,255,255,0.9); color: #222222; z-index: 1100; border: 1px solid #dddddd; 
+
     display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.8rem;
+
     margin: 15px 0 -34px 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+
   }
+
   
+
   .filter-notice { text-align: center; padding: 16px 10px; background: #fafafa; border-radius: 8px; margin: 10px 0 20px; font-size: 0.85rem; color: #666666; border: 1px dashed #cccccc; }
+
   .filter-notice span.highlight { color: #222222; font-weight: bold; }
+
   .reset-btn { cursor: pointer; text-decoration: underline; display: inline-block; margin-top: 4px; font-size: 0.75rem; color: #888; }
+
   .footer { padding: 15px; text-align: center; border-top: 1px solid #eaeaea; flex-shrink: 0; background: #ffffff; }
 
-  /* ──────── [새로 추가된 상반기 결산 레이아웃 스타일 - 칼정렬 버전] ──────── */
-  .settlement-view { display: none; background: #ffffff; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; overflow-y: auto; padding: 40px 20px 120px; box-sizing: border-box; }
-  
-  .canvas-container { 
-    position: relative; 
-    width: 100%; 
-    max-width: 400px; 
-    margin: 0 auto; 
-    aspect-ratio: 1 / 1.5; 
-    background-size: 100% 100%; 
-    background-repeat: no-repeat;
-  }
-  
-  .canvas-grid-wrap {
-    position: absolute;
-    top: 11.5%; left: 4.8%; right: 4.8%; bottom: 6%;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-    gap: 3.2% 4%;
-  }
-  
-  .canvas-month-box {
-    display: flex;
-    flex-direction: column;
-    padding-top: 24px;
-    box-sizing: border-box;
-    overflow: hidden;
-    justify-content: flex-start;
-  }
-  
-  .canvas-row {
-    display: flex;
-    align-items: center;
-    font-family: 'DungGeunMo', sans-serif;
-    font-size: 7.5px; 
-    height: 11.8px; /* 한 줄 높이를 완전 픽스해서 누적 밀림 방지함다 누님! */
-    box-sizing: border-box;
-    color: #333333;
-    white-space: nowrap;
-    overflow: hidden;
-  }
-  
-  .canvas-row .c-date { width: 32px; text-align: center; flex-shrink: 0; letter-spacing: -0.5px; }
-  .canvas-row .c-title { flex-grow: 1; overflow: hidden; text-overflow: ellipsis; padding-left: 4px; letter-spacing: -0.3px; }
-  
-  /* 미참석 스케줄 취소선 + 투명도 조절 프로토콜 */
-  .canvas-row.not-attended { color: #dddddd; text-decoration: line-through; }
-  
-  .download-trigger-btn {
-    display: block; width: 100%; max-width: 400px; margin: 20px auto 0; padding: 14px;
-    background: #222222; color: #ffffff; border: none; border-radius: 6px;
-    font-weight: bold; text-align: center; cursor: pointer; font-size: 0.9rem;
-  }
 </style>
-<!-- html2canvas 라이브러리 CDN 로드 -->
-<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
 </head>
+
 <body>
+
 <div class="app-wrap">
+
   <div id="main-view" style="display: flex; flex-direction: column; height: 100%;">
+
     <div class="header"><span class="main-title">🐲🐎🐎🐴</span><a href="https://www.instagram.com/dragonpony_/" target="_blank" class="sub-title-link">@dragonpony_</a></div>
+
     
+
     <div class="tab-wrap">
+
       <button class="tab-btn" onclick="switchTab('calendar')" id="btn-calendar"><span>monthly</span></button>
+
       <button class="tab-btn" onclick="switchTab('list')" id="btn-list"><span>check list</span></button>
+
       <button class="tab-btn" onclick="switchTab('lyrics')" id="btn-lyrics"><span>etc.</span></button>
+
     </div>
+
     
+
     <div id="calendar-view" class="view-content"><div class="cal-header-wrap"><button class="cal-nav-btn" onclick="prevMonth()">◀</button><span id="cal-title"></span><button class="cal-nav-btn" onclick="nextMonth()">▶</button></div><div class="cal-grid" id="cal-grid"></div></div>
-    
-    <div id="list-view" class="view-content">
-      <div id="schedule-list" class="list-page"></div>
-      
-      <!-- 상반기 결산 페이지 진입 버튼 -->
-      <div class="data-mgmt" style="margin-top: 20px;">
-        <div class="data-mgmt-title">2026 HALF-YEAR REVIEW</div>
-        <button class="data-btn" onclick="openSettlement()" style="background:#222222; color:#ffffff; border-color:#222222; width:100%; padding:12px; font-size:0.85rem;">상반기 결산 이미지 뽑기 🐲</button>
-      </div>
 
-      <div class="data-mgmt"><div class="data-mgmt-title">CHECK DATA BACKUP</div><div class="data-btn-row"><button class="data-btn" onclick="exportData()">기록 내보내기</button><button class="data-btn" onclick="importData()">기록 가져오기</button></div></div>
-    </div>
+    <div id="list-view" class="view-content"><div id="schedule-list" class="list-page"></div><div class="data-mgmt"><div class="data-mgmt-title">CHECK DATA BACKUP</div><div class="data-btn-row"><button class="data-btn" onclick="exportData()">기록 내보내기</button><button class="data-btn" onclick="importData()">기록 가져오기</button></div></div></div>
+
     
+
     <div id="lyrics-view" class="view-content">
+
       <div class="etc-page">
+
         <div class="section-title">*미발매곡 가사</div>
+
         <div class="lyrics-box-container">
+
           <div class="lyrics-btn-flex" id="lyrics-btn-area"></div>
+
         </div>
+
         
+
         <div class="section-title">*etc ..</div>
+
         <div class="etc-box-container">
+
           <div class="accordion-wrapper" id="etc-accordion-area"></div>
+
         </div>
+
       </div>
+
     </div>
+
     
+
     <div class="footer"><a href="#" style="color:#bbbbbb; font-size:0.75rem; text-decoration:none;">@dragonponysuzip</a></div>
+
   </div>
 
-  <!-- [상세 레이아웃] -->
+
+
   <div class="detail-page" id="detail-view">
+
     <button class="floating-back-btn" onclick="closeDetail()">◀</button>
+
     <div style="padding: 70px 20px 20px;">
+
       <div id="view-date" style="color:#888888; font-weight:700; font-size:1.1rem; margin-bottom:6px;"></div>
+
       <div id="view-title" style="font-size:1.8rem; font-weight:800; line-height:1.2; color:#222222; margin-bottom:24px;"></div>
+
       <div style="line-height:1.8; color:#444444; font-size:0.95rem; white-space:pre-line; background:#fafafa; border:1px solid #eaeaea; padding:20px; border-radius:8px;" id="view-text"></div>
+
       <div id="add-to-cal-btn-area" style="margin-top:15px; padding-bottom:100px;"></div>
+
     </div>
+
   </div>
+
+
 
   <div class="lyrics-detail" id="lyrics-detail-view">
+
     <button class="floating-back-btn" onclick="closeLyrics()">◀</button>
+
     <div id="l-title" style="font-size:1.8rem; font-weight:800; color:#222222; margin:70px 0 24px; text-align:center;"></div>
+
     <div id="l-content" style="text-align:center; line-height:2.0; font-size:0.95rem; color:#555555; white-space:pre-line; padding:0 20px 80px;"></div>
+
   </div>
 
-  <!-- ──────── [새로 추가된 상반기 결산 화면 구역] ──────── -->
-  <div class="settlement-view" id="settlement-view">
-    <button class="floating-back-btn" onclick="closeSettlement()">◀</button>
-    <div class="canvas-container" id="settlement-canvas" style="background-image: url('image_7f9501.jpg');">
-      <div class="canvas-grid-wrap" id="canvas-grid-content">
-        <!-- 스크립트 엔진이 월별 데이터 정렬 후 사격하는 구역 -->
-      </div>
-    </div>
-    <button class="download-trigger-btn" onclick="downloadSettlementImage()">이미지로 저장하기 📸</button>
-  </div>
 </div>
 
+
+
 <script>
+
   let currentYear = new Date().getFullYear(), currentMonth = new Date().getMonth() + 1;
+
   let scheduleData = [], lyricsData = [], etcData = [], currentFilter = '';
+
   const typeColors = { '방송': '#edf2fc', '공연': '#fdf2e9', '기타': '#f3f0fa', '콘텐츠': '#e8f8f5' }; 
+
   
+
   function getAttendance() { const s = localStorage.getItem('dp_attendance'); return s ? JSON.parse(s) : {}; }
+
   
+
   function switchTab(t) { 
+
     document.querySelectorAll('.tab-btn, .view-content').forEach(e => e.classList.remove('active')); 
+
     document.getElementById('btn-'+t).classList.add('active'); 
+
     document.getElementById(t+'-view').classList.add('active'); 
+
     sessionStorage.setItem('dp_current_tab', t);
+
   }
 
+
+
   async function fetchData() {
+
     const sId = '1UKMplA90Fz4x3ueJtjRSOGOK1bD1c74GkK-wo573dG4';
+
     const lId = '1zfCSs8P8qEtDaWQlYFaCb7f1-roga3uyGLeWGDtUfME';
+
     const eId = '1XMpkY9Ym-EDLCRG-CkfXeqA-w35ThJoRhBmgCejsrCs';
+
     
+
     try {
+
       const [resS, resL, resE] = await Promise.all([
+
         fetch(`https://docs.google.com/spreadsheets/d/${sId}/gviz/tq?tqx=out:json`), 
+
         fetch(`https://docs.google.com/spreadsheets/d/${lId}/gviz/tq?tqx=out:json`),
+
         fetch(`https://docs.google.com/spreadsheets/d/${eId}/gviz/tq?tqx=out:json`)
+
       ]);
+
       const [txtS, txtL, txtE] = await Promise.all([resS.text(), resL.text(), resE.text()]);
+
       
+
       scheduleData = JSON.parse(txtS.substring(txtS.indexOf('{'), txtS.lastIndexOf('}') + 1)).table.rows.filter(r => r.c[0] && r.c[0].v !== '날짜').map(r => ({ dateStr: r.c[0].v, titleStr: r.c[1]?.v || '', imgUrl: r.c[2]?.v || '', descStr: r.c[3]?.v || '', typeStr: r.c[4]?.v || '' }));
+
       lyricsData = JSON.parse(txtL.substring(txtL.indexOf('{'), txtL.lastIndexOf('}') + 1)).table.rows.filter(r => r.c[0] && r.c[0].v !== '곡제목').map(r => ({ title: r.c[0].v, content: r.c[1]?.v || '' }));
+
       etcData = JSON.parse(txtE.substring(txtE.indexOf('{'), txtE.lastIndexOf('}') + 1)).table.rows.filter(r => r.c[0] && r.c[0].v !== '질문' && r.c[0].v !== '타이틀').map(r => ({ title: r.c[0].v, answer: r.c[1]?.v || '' }));
+
       
+
       renderCalendar(currentYear, currentMonth); renderList(); 
+
       renderLyricsButtons(); renderEtcAccordion();
+
       
+
       const savedTab = sessionStorage.getItem('dp_current_tab') || 'calendar';
+
       switchTab(savedTab);
+
       
+
     } catch(e) { console.error(e); }
+
   }
+
+
 
   function toggleFilter(type) { currentFilter = (currentFilter === type) ? '' : type; renderList(); }
 
+
+
   function toggleCheck(title, event) {
+
     event.stopPropagation();
+
     const att = getAttendance();
+
     att[title] = !att[title];
+
     localStorage.setItem('dp_attendance', JSON.stringify(att));
+
     renderList();
+
   }
+
+
 
   function renderList() {
+
     const list = document.getElementById('schedule-list'); list.innerHTML = '';
+
     const att = getAttendance(); const today = new Date(); today.setHours(0,0,0,0);
+
     if(currentFilter) {
+
       const n = document.createElement('div'); n.className = 'filter-notice';
+
       n.innerHTML = `<span class="highlight">[${currentFilter}]</span> 스케줄 모아보기 중 🤘<br><span class="reset-btn" onclick="toggleFilter('')">전체 스케줄 보기</span>`;
+
       list.appendChild(n);
+
     }
+
     const filtered = currentFilter ? scheduleData.filter(d => d.typeStr === currentFilter) : scheduleData;
+
     const upW = document.createElement('div'), pastD = document.createElement('details');
+
     pastD.className = 'past-schedules'; pastD.innerHTML = '<summary style="cursor:pointer; text-align:center; padding:12px; color:#999; background:#fafafa; border:1px solid #eaeaea; border-radius:8px; font-size:0.85rem; font-weight:bold; list-style:none; margin:10px 0;">▼ 지나간 스케줄 보기</summary>';
+
     const pastW = document.createElement('div'); pastD.appendChild(pastW);
 
+
+
     filtered.forEach(item => {
+
       const p = item.dateStr.split('-')[0].split('/'); const itemD = new Date(currentYear, p[0]-1, p[1]);
+
       const div = document.createElement('div'); div.className = 'schedule-item';
+
       div.onclick = () => openDetail(item.dateStr, item.titleStr, item.imgUrl, item.descStr);
+
       const bc = currentFilter === item.typeStr ? 'category-badge active' : 'category-badge';
+
       
+
       div.innerHTML = `
+
         <div class="date">${item.dateStr}</div>
+
         <div class="${bc}" onclick="event.stopPropagation(); toggleFilter('${item.typeStr}')">${item.typeStr || '기타'}</div>
+
         <div class="title">${item.titleStr}</div>
+
         <div class="check-btn ${att[item.titleStr]?'checked':''}" onclick="toggleCheck('${item.titleStr}', event)"></div>
+
       `;
+
       
+
       if(itemD < today) { div.style.opacity = '0.4'; div.querySelector('.date').style.color = '#888'; div.querySelector('.category-badge').style.background = '#eee'; pastW.appendChild(div); } else upW.appendChild(div);
+
     });
+
     list.appendChild(upW); if(pastW.children.length > 0) list.appendChild(pastD);
+
   }
+
+
 
   function isDateInRange(m, d, str) {
+
     const p = str.split('-'); const s = p[0].split('/'); if(parseInt(s[0])===m && parseInt(s[1])===d) return true;
+
     if(p[1]) { const e = p[1].split('/'); const cell = new Date(currentYear, m-1, d).getTime(); const start = new Date(currentYear, s[0]-1, s[1]).getTime(), end = e.length===1 ? new Date(currentYear, s[0]-1, e[0]).getTime() : new Date(currentYear, e[0]-1, e[1]).getTime(); return cell >= start && cell <= end; }
+
     return false;
+
   }
+
   
+
   function renderCalendar(y, m) {
+
     const g = document.getElementById('cal-grid'); g.innerHTML = ''; document.getElementById('cal-title').innerText = `${y}년 ${m}월`;
+
     const last = new Date(y, m, 0).getDate(), first = new Date(y, m-1, 1).getDay();
+
     const today = new Date(); today.setHours(0,0,0,0);
+
     ['일','월','화','수','목','금','토'].forEach(d => g.innerHTML += `<div class="cal-day-name">${d}</div>`);
+
     for(let i=0; i<first; i++) g.innerHTML += '<div></div>';
+
     for(let d=1; d<=last; d++) {
+
       const cell = new Date(y, m-1, d); const evs = scheduleData.filter(ev => isDateInRange(m, d, ev.dateStr));
+
       const dayEl = document.createElement('div'); dayEl.className = 'cal-day' + (cell.getTime()===today.getTime()?' today':'');
+
       
+
       if(evs.length > 0) {
+
         dayEl.onclick = () => openDetail(evs[0].dateStr, evs[0].titleStr, evs[0].imgUrl, evs[0].descStr);
+
       }
+
       
+
       let evH = ''; evs.forEach(ev => {
+
         const bg = typeColors[ev.typeStr] || '#f1f1f1';
+
         evH += `<div class="cal-event" style="background:${cell < today ? '#f5f5f5' : bg}; color:${cell < today ? '#aaaaaa' : '#333333'}">${ev.titleStr}</div>`;
+
       });
+
       dayEl.innerHTML = (cell.getTime()===today.getTime()?'<span class="today-tag">TODAY</span>':'') + `<span class="day-num">${d}</span><div class="cal-event-list">${evH}</div>`; g.appendChild(dayEl);
+
     }
+
   }
+
   
+
   function renderLyricsButtons() {
+
     const area = document.getElementById('lyrics-btn-area'); area.innerHTML = '';
+
     lyricsData.forEach(s => {
+
       const btn = document.createElement('div'); btn.className = 'lyrics-btn-item'; btn.innerText = s.title;
+
       btn.onclick = () => { 
+
         document.getElementById('l-title').innerText = s.title; 
+
         document.getElementById('l-content').innerText = s.content; 
+
         document.getElementById('lyrics-detail-view').style.display = 'block'; 
+
         document.getElementById('main-view').style.display = 'none'; 
+
         document.getElementById('lyrics-detail-view').scrollTop = 0; 
+
       };
+
       area.appendChild(btn);
+
     });
+
   }
+
+
 
   function renderEtcAccordion() {
+
     const area = document.getElementById('etc-accordion-area'); area.innerHTML = '';
+
     etcData.forEach((e, idx) => {
+
       const wrap = document.createElement('div'); wrap.className = 'accordion-item';
+
       wrap.innerHTML = `
+
         <div class="accordion-header" onclick="toggleAccordion(this)">
+
           ${e.title}
+
         </div>
+
         <div class="accordion-content">${e.answer}</div>
+
       `;
+
       area.appendChild(wrap);
+
     });
+
   }
+
+
 
   function toggleAccordion(element) {
+
     const item = element.parentElement;
+
     item.classList.toggle('active');
+
   }
+
   
+
   function prevMonth() { currentMonth--; if(currentMonth < 1) { currentMonth=12; currentYear--; } renderCalendar(currentYear, currentMonth); }
+
   function nextMonth() { currentMonth++; if(currentMonth > 12) { currentMonth=1; currentYear++; } renderCalendar(currentYear, currentMonth); }
+
   
+
   function openDetail(date, title, img, txt) {
+
     document.getElementById('main-view').style.display = 'none'; document.getElementById('detail-view').style.display = 'block';
+
     document.getElementById('view-date').innerText = date; document.getElementById('view-title').innerText = title;
+
     let ft = String(txt).replace(/\n/g, '<br>').replace(/(https?:\/\/[^\s<>]+)/g, u => `<a href="${u}" target="_blank" style="color:#222222; font-weight:bold; text-decoration:underline;">인스타그램 바로가기 ↗</a>`);
+
     document.getElementById('view-text').innerHTML = ft;
+
     const sp = date.split('-')[0]; const m = sp.split('/')[0].padStart(2, '0'), d = sp.split('/')[1].padStart(2, '0');
+
     const ics = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nDTSTART:${currentYear}${m}${d}T090000Z\nSUMMARY:[DP] ${title}\nDESCRIPTION:${txt.replace(/\n/g, '\\n')}\nEND:VEVENT\nEND:VCALENDAR`;
+
     const url = URL.createObjectURL(new Blob([ics], {type:'text/calendar'}));
+
     document.getElementById('add-to-cal-btn-area').innerHTML = `<a href="${url}" download="dp.ics" style="display:block; width:100%; padding:14px; background:#ffffff; border:1px solid #dddddd; color:#333333; border-radius:6px; font-weight:bold; text-align:center; text-decoration:none; box-sizing:border-box; font-size:0.85rem; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">🗓️ 아이폰 캘린더에 일정 추가하기</a>`;
+
     document.getElementById('detail-view').scrollTop = 0;
+
   }
+
   
+
   function closeDetail() { document.getElementById('detail-view').style.display = 'none'; document.getElementById('main-view').style.display = 'flex'; }
+
   function closeLyrics() { document.getElementById('lyrics-detail-view').style.display = 'none'; document.getElementById('main-view').style.display = 'flex'; }
+
   
+
   function exportData() { const d = localStorage.getItem('dp_attendance'); if(!d || d === '{}') return alert("내보낼 기록이 없세혁!"); navigator.clipboard.writeText(btoa(encodeURIComponent(d))).then(() => alert("체크 기록이 복사되었어요!\n메모장이나 카톡에 붙여넣어 보관하세혁♡,,♡")); }
+
   function importData() { const c = prompt("복사해둔 백업 코드를 입력해주세혁:"); if(!c) return; try { localStorage.setItem('dp_attendance', decodeURIComponent(atob(c))); alert("기록 복구 성공! 🎸"); location.reload(); } catch(e) { alert("잘못된 코드인 것 같아요. 다시 확인해주세혁ㅠ..ㅠ!"); } }
 
-  /* ──────── [상반기 결산 기능 스크립트 엔진] ──────── */
-  function openSettlement() {
-    document.getElementById('main-view').style.display = 'none';
-    document.getElementById('settlement-view').style.display = 'block';
-    renderSettlementCanvas();
-  }
-
-  function closeSettlement() {
-    document.getElementById('settlement-view').style.display = 'none';
-    document.getElementById('main-view').style.display = 'flex';
-  }
-
-  function renderSettlementCanvas() {
-    const gridArea = document.getElementById('canvas-grid-content');
-    gridArea.innerHTML = '';
-    const att = getAttendance();
-
-    for (let m = 1; m <= 6; m++) {
-      const monthBox = document.createElement('div');
-      monthBox.className = 'canvas-month-box';
-
-      // 10진수 파싱 추가로 달 데이터 꼬이는 거 차단 완료했슴다 누님!
-      const monthEvents = scheduleData.filter(ev => {
-        if (!ev.dateStr) return false;
-        const cleanDate = ev.dateStr.split('-')[0].trim();
-        const startMonth = parseInt(cleanDate.split('/')[0], 10);
-        return startMonth === m;
-      }).sort((a, b) => {
-        const dayA = parseInt(a.dateStr.split('-')[0].split('/')[1], 10);
-        const dayB = parseInt(b.dateStr.split('-')[0].split('/')[1], 10);
-        return dayA - dayB;
-      });
-
-      // 무조건 8개 라인 생성해서 맵 매칭
-      for (let i = 0; i < 8; i++) {
-        const row = document.createElement('div');
-        row.className = 'canvas-row';
-
-        if (monthEvents[i]) {
-          const ev = monthEvents[i];
-          const dateDay = ev.dateStr.split('-')[0].trim();
-          const isAttended = att[ev.titleStr] === true;
-
-          if (!isAttended) {
-            row.classList.add('not-attended');
-          }
-
-          row.innerHTML = `
-            <span class="c-date">${dateDay}</span>
-            <span class="c-title">${ev.titleStr}</span>
-          `;
-        } else {
-          // 빈 줄 슬래시 채워주기 프로토콜
-          row.innerHTML = `<span class="c-date" style="color:#eeeeee;">/</span><span class="c-title">&nbsp;</span>`;
-        }
-        monthBox.appendChild(row);
-      }
-      gridArea.appendChild(monthBox);
-    }
-  }
-
-  function downloadSettlementImage() {
-    const element = document.getElementById('settlement-canvas');
-    
-    html2canvas(element, {
-      scale: 3,
-      useCORS: true,
-      allowTaint: true,
-      backgroundColor: null
-    }).then(canvas => {
-      const dataUrl = canvas.toDataURL('image/png');
-      const link = document.createElement('a');
-      link.href = dataUrl;
-      link.download = '2026_드래곤포니_상반기결산_드포수집.png';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }).catch(err => {
-      console.error(err);
-      alert("이미지 생성 중 오류가 발생했세혁 ㅠㅠ 다시 시도해주세혁!");
-    });
-  }
-
   window.onload = fetchData;
+
 </script>
+
 </body>
+
 </html>
+
