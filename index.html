@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>DragonPony Schedule v7.9 (Click Conflict Perfectly Fixed)</title>
+<title>DragonPony Schedule v8.0 (Data Trim Perfectly Fixed)</title>
 
 <link rel="icon" type="image/jpeg" href="icon.jpg">
 <link rel="apple-touch-icon" href="icon.jpg">
@@ -55,7 +55,6 @@
   .category-badge.active { background: #222222; color: #ffffff; border-color: #222222; }
   .title { font-size: 0.85rem; flex-grow: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #333333; padding-right: 10px; }
   
-  /* 터치 미스를 방지하기 위해 가상 패딩 및 영역 우선순위(z-index)를 빡세게 높였슴다 누님! */
   .check-btn { 
     width: 24px; height: 24px; border: 1.5px solid #cccccc; border-radius: 0px; 
     flex-shrink: 0; display: flex; align-items: center; justify-content: center; 
@@ -272,13 +271,23 @@
   </div>
 </div>
 
-<script>
+<script {nonce}>
   let currentYear = new Date().getFullYear(), currentMonth = new Date().getMonth() + 1;
   let scheduleData = [], lyricsData = [], etcData = [], currentFilter = '';
   let isPastSchedulesOpen = false; 
   const typeColors = { '방송': '#edf2fc', '공연': '#fdf2e9', '기타': '#f3f0fa', '콘텐츠': '#e8f8f5' }; 
   
-  function getAttendance() { const s = localStorage.getItem('dp_attendance'); return s ? JSON.parse(s) : {}; }
+  // 🟥 로컬스토리지 저장할 때 키(Key)값 매칭 공백 트리밍 가동 프로토콜
+  function getAttendance() { 
+    const s = localStorage.getItem('dp_attendance'); 
+    if (!s) return {};
+    const rawObj = JSON.parse(s);
+    const cleanObj = {};
+    Object.keys(rawObj).forEach(key => {
+      cleanObj[key.trim()] = rawObj[key];
+    });
+    return cleanObj;
+  }
   
   function switchTab(t) { 
     document.querySelectorAll('.tab-btn, .view-content').forEach(e => e.classList.remove('active')); 
@@ -318,7 +327,8 @@
   function toggleCheck(title, event) {
     event.stopPropagation();
     const att = getAttendance();
-    att[title] = !att[title];
+    const cleanTitle = title.trim(); // 🟥 체크 누를 때 확실하게 공백 박멸!!
+    att[cleanTitle] = !att[cleanTitle];
     localStorage.setItem('dp_attendance', JSON.stringify(att));
     
     const pastEl = document.getElementById('past-details-wrapper');
@@ -362,20 +372,19 @@
       const p = item.dateStr.split('-')[0].split('/'); const itemD = new Date(currentYear, p[0]-1, p[1]);
       const div = document.createElement('div'); div.className = 'schedule-item';
       
-      // 🟥 [핵심 개조 구역] 유저가 체크박스나 체크박스 주변 구역을 터치 미스했을 때 
-      // 강제로 상세 팝업창 열리는 이벤트를 이 단계에서 즉각 요격해서 커트함다!!
       div.onclick = (e) => {
         if (e.target.classList.contains('check-btn')) return;
         openDetail(item.dateStr, item.titleStr, item.imgUrl, item.descStr);
       };
 
       const bc = currentFilter === item.typeStr ? 'category-badge active' : 'category-badge';
-      
+      const cleanTitleStr = item.titleStr ? item.titleStr.trim() : ''; // 🟥 공백 트리밍 가동
+
       div.innerHTML = `
         <div class="date">${item.dateStr}</div>
         <div class="${bc}" onclick="event.stopPropagation(); toggleFilter('${item.typeStr}')">${item.typeStr || '기타'}</div>
         <div class="title">${item.titleStr}</div>
-        <div class="check-btn ${att[item.titleStr]?'checked':''}" onclick="toggleCheck('${item.titleStr}', event)"></div>
+        <div class="check-btn ${att[cleanTitleStr]?'checked':''}" onclick="toggleCheck('${cleanTitleStr}', event)"></div>
       `;
       
       if(itemD < today) { div.style.opacity = '0.4'; div.querySelector('.date').style.color = '#888'; div.querySelector('.category-badge').style.background = '#eee'; pastW.appendChild(div); } else upW.appendChild(div);
@@ -547,7 +556,9 @@
             displayDate = displayDate.replace('2026', '').replace(/^[^\d]+/, '').trim();
           }
 
-          const isAttended = att[ev.titleStr] === true;
+          // 🟥 결산 렌더링 시에도 무조건 제목 문자열 공백 트리밍해서 체크상태 하이브리드 싱크로 백프로 연동!!
+          const cleanEvTitle = ev.titleStr ? ev.titleStr.trim() : '';
+          const isAttended = att[cleanEvTitle] === true;
 
           row.innerHTML = `
             <span class="c-date">${displayDate}</span>
