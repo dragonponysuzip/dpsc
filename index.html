@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>DragonPony Schedule v7.6 (Details Toggle Fixed)</title>
+<title>DragonPony Schedule v7.7 (Details Open State Fixed)</title>
 
 <link rel="icon" type="image/jpeg" href="icon.jpg">
 <link rel="apple-touch-icon" href="icon.jpg">
@@ -272,6 +272,8 @@
 <script>
   let currentYear = new Date().getFullYear(), currentMonth = new Date().getMonth() + 1;
   let scheduleData = [], lyricsData = [], etcData = [], currentFilter = '';
+  // 🟥 글로벌 변수로 지나간 스케줄 창의 열림 상태를 강제 저장함다!
+  let isPastSchedulesOpen = false; 
   const typeColors = { '방송': '#edf2fc', '공연': '#fdf2e9', '기타': '#f3f0fa', '콘텐츠': '#e8f8f5' }; 
   
   function getAttendance() { const s = localStorage.getItem('dp_attendance'); return s ? JSON.parse(s) : {}; }
@@ -316,10 +318,17 @@
     const att = getAttendance();
     att[title] = !att[title];
     localStorage.setItem('dp_attendance', JSON.stringify(att));
+    
+    // 🟥 체크박스 누르기 직전, 현재 details 엘리먼트가 열려있는지 닫혀있는지 상태를 캐치해서 동기화함다!
+    const pastEl = document.getElementById('past-details-wrapper');
+    if (pastEl) {
+      isPastSchedulesOpen = pastEl.hasAttribute('open');
+    }
+    
     renderList();
   }
 
-  /* 🟥 [중요] 누님 피드백 반영: 지나간 스케줄 토글 닫힘 대참사 방멸 프로토콜 인젝션 구역 */
+  /* ──────── 덮어쓰기 완료된 대망의 리스트 메모라이즈 엔진 구역 ──────── */
   function renderList() {
     const list = document.getElementById('schedule-list'); list.innerHTML = '';
     const att = getAttendance(); const today = new Date(); today.setHours(0,0,0,0);
@@ -330,13 +339,22 @@
     }
     const filtered = currentFilter ? scheduleData.filter(d => d.typeStr === currentFilter) : scheduleData;
     const upW = document.createElement('div'), pastD = document.createElement('details');
+    
+    // 🟥 상태 추적 아이디 부여 및 브라우저 강제 닫힘 버그 완벽 차단!
+    pastD.id = 'past-details-wrapper';
     pastD.className = 'past-schedules'; 
     
-    // ⚠️ 체크 박스 누를 때 브라우저가 details 토글 명령 감지하는 버그 원천 차단
+    // 유저가 진짜 손가락으로 SUMMARY 글자를 직접 눌러서 여닫을 때만 상태를 변경하게 제어함다!
     pastD.onclick = function(e) {
-      if (e.target.tagName === 'SUMMARY') return; // 오직 SUMMARY 글자 눌렀을 때만 열고 닫히게 통제함다!
-      if (e.target.closest('.schedule-item')) {
-        e.preventDefault(); // 스케줄 아이템 내부 클릭 시 details가 닫히는 브라우저 기본 이벤트를 콱 묶어버림다!
+      if (e.target.tagName === 'SUMMARY') {
+        // 토글 동작 시 브라우저 속도차이를 고려하여 비동기로 열림 상태 최종 추적
+        setTimeout(() => {
+          isPastSchedulesOpen = pastD.hasAttribute('open');
+        }, 10);
+        return;
+      }
+      if (e.target.closest('.schedule-item') || e.target.closest('.check-btn')) {
+        e.preventDefault(); 
       }
     };
 
@@ -358,7 +376,15 @@
       
       if(itemD < today) { div.style.opacity = '0.4'; div.querySelector('.date').style.color = '#888'; div.querySelector('.category-badge').style.background = '#eee'; pastW.appendChild(div); } else upW.appendChild(div);
     });
-    list.appendChild(upW); if(pastW.children.length > 0) list.appendChild(pastD);
+    list.appendChild(upW); 
+    
+    if(pastW.children.length > 0) {
+      list.appendChild(pastD);
+      // 🟥 [핵심 마법] 리스트가 새로 그려진 직후, 이전에 열려 있었다면 open 속성을 강제로 다시 주입해서 문을 강제로 열어둡니다!!
+      if (isPastSchedulesOpen) {
+        pastD.setAttribute('open', '');
+      }
+    }
   }
 
   function isDateInRange(m, d, str) {
@@ -432,7 +458,7 @@
     let ft = String(txt).replace(/\n/g, '<br>').replace(/(https?:\/\/[^\s<>]+)/g, u => `<a href="${u}" target="_blank" style="color:#222222; font-weight:bold; text-decoration:underline;">인스타그램 바로가기 ↗</a>`);
     document.getElementById('view-text').innerHTML = ft;
     const sp = date.split('-')[0]; const m = sp.split('/')[0].padStart(2, '0'), d = sp.split('/')[1].padStart(2, '0');
-    const ics = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nDTSTART:${currentYear}${m}${d}T090000Z\nSUMMARY:[DP] ${title}\nDESCRIPTION:${txt.replace(/\n/g, '\\n')}\nEND:VCALENDAR`;
+    const ics = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nDTSTART:${currentYear}${m}${d}T090000Z\nSUMMARY:[DP] ${title}\nDESCRIPTION:${txt.replace(/\n/g, '\\n')}\nEND:VEVENT\nEND:VCALENDAR`;
     const url = URL.createObjectURL(new Blob([ics], {type:'text/calendar'}));
     document.getElementById('add-to-cal-btn-area').innerHTML = `<a href="${url}" download="dp.ics" style="display:block; width:100%; padding:14px; background:#ffffff; border:1px solid #dddddd; color:#333333; border-radius:6px; font-weight:bold; text-align:center; text-decoration:none; box-sizing:border-box; font-size:0.85rem; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">🗓️ 아이폰 캘린더에 일정 추가하기</a>`;
     document.getElementById('detail-view').scrollTop = 0;
